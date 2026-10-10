@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /rust
+    schedule:
+      interval: weekly
+    # The verified-* crates are moved deliberately; see CONTRIBUTING.md.
+    ignore:
+      - dependency-name: "verified-*"
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

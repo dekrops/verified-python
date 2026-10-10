@@ -1,0 +1,131 @@
+{
+  "language": "work-contract-1",
+  "identity": {
+    "id": "support-chatbot-session",
+    "version": "1.0.0"
+  },
+  "inputs": {
+    "session": {
+      "type": "text"
+    }
+  },
+  "kinds": {
+    "credit": {
+      "key": [
+        "id"
+      ],
+      "fields": {
+        "id": {
+          "type": "text"
+        },
+        "session": {
+          "type": "text"
+        },
+        "turn": {
+          "type": "text"
+        },
+        "amount": {
+          "type": "money",
+          "currency": "EUR",
+          "scale": 2
+        },
+        "sessionTotal": {
+          "type": "money",
+          "currency": "EUR",
+          "scale": 2
+        }
+      }
+    },
+    "session": {
+      "key": [
+        "id"
+      ],
+      "fields": {
+        "id": {
+          "type": "text"
+        },
+        "turns": {
+          "type": "int"
+        }
+      }
+    }
+  },
+  "evidence": {
+    "conflicts": "unknown",
+    "sources": {
+      "credit": [
+        "tool-gateway"
+      ],
+      "session": [
+        "chat-platform"
+      ]
+    }
+  },
+  "policy": {
+    "session_credit_limit": {
+      "policy": {
+        "id": "POL-CREDIT-SESSION",
+        "version": "1.0.0"
+      },
+      "type": {
+        "type": "money",
+        "currency": "EUR",
+        "scale": 2
+      },
+      "value": "15000"
+    }
+  },
+  "evaluation": {
+    "semantics": "kleene-1"
+  },
+  "requires": [
+    {
+      "id": "CUMULATIVE_WITHIN_SESSION_LIMIT",
+      "predicate": {
+        "forall": "c",
+        "in": "credit",
+        "holds": {
+          "or": [
+            {
+              "cmp": "ne",
+              "left": {
+                "var": "c",
+                "field": "session"
+              },
+              "right": {
+                "input": "session"
+              }
+            },
+            {
+              "cmp": "le",
+              "left": {
+                "var": "c",
+                "field": "sessionTotal"
+              },
+              "right": {
+                "param": "session_credit_limit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "SESSION_RECORDED",
+      "predicate": {
+        "exists": "s",
+        "in": "session",
+        "where": {
+          "cmp": "eq",
+          "left": {
+            "var": "s",
+            "field": "id"
+          },
+          "right": {
+            "input": "session"
+          }
+        }
+      }
+    }
+  ]
+}

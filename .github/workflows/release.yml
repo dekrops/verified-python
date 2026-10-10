@@ -1,0 +1,94 @@
+name: Release
+
+# Builds release artifacts. Publishing is a separate, manual, protected step:
+# nothing is uploaded to PyPI by pushing a tag.
+#
+# Before the first upload:
+#   1. decide the import-name question (see docs/protocol-compatibility.md);
+#   2. register `verified-python` on PyPI with this repository and the
+#      `pypi` environment as a trusted publisher (no API token is stored);
+#   3. protect the `pypi` environment with required reviewers.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Upload to PyPI (requires the protected pypi environment)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  wheels:
+    name: Wheel (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { os: ubuntu-latest, target: aarch64, manylinux: auto }
+          - { os: ubuntu-latest, target: x86_64, manylinux: musllinux_1_2 }
+          - { os: ubuntu-latest, target: aarch64, manylinux: musllinux_1_2 }
+          - { os: macos-latest, target: aarch64 }
+          - { os: macos-13, target: x86_64 }
+          - { os: windows-latest, target: x64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux || 'auto' }}
+          rust-toolchain: "1.99.0"
+          args: --release --locked --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.manylinux || 'native' }}
+          path: dist
+
+  sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-sdist
+          path: dist
+
+  check:
+    needs: [wheels, sdist]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: dist
+      - uses: astral-sh/setup-uv@v5
+      - run: uvx twine check --strict dist/*
+
+  publish:
+    name: Publish to PyPI
+    needs: check
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1

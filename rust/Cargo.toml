@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "verified-python-native"
+description = "Python bindings to the public Work Verification Protocol crates of dekrops/verified-cli."
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+repository = "https://github.com/dekrops/verified-python"
+license = "Apache-2.0"
+# Distributed only inside the verified-python wheel.
+publish = false
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+# The verification crates are pinned to one reviewed commit of the public
+# `main` branch of dekrops/verified-cli. They are unpublished and untagged, so
+# a revision is the only honest pin. Change all five together, with the result
+# tables in docs/protocol-compatibility.md, in one pull request.
+[dependencies]
+verified-canonical = { git = "https://github.com/dekrops/verified-cli", rev = "fda35a57d081889f8f0a4409cf1fa41e7dd919ab", version = "0.1.0" }
+verified-contract = { git = "https://github.com/dekrops/verified-cli", rev = "fda35a57d081889f8f0a4409cf1fa41e7dd919ab", version = "0.1.0" }
+verified-protocol = { git = "https://github.com/dekrops/verified-cli", rev = "fda35a57d081889f8f0a4409cf1fa41e7dd919ab", version = "0.1.0" }
+verified-verifier = { git = "https://github.com/dekrops/verified-cli", rev = "fda35a57d081889f8f0a4409cf1fa41e7dd919ab", version = "0.1.0" }
+verified-work-unit = { git = "https://github.com/dekrops/verified-cli", rev = "fda35a57d081889f8f0a4409cf1fa41e7dd919ab", version = "0.1.0" }
+
+base64 = "0.23.1"
+ed25519-dalek = { version = "3.0.0", default-features = false }
+pyo3 = { version = "0.29.3", features = ["abi3-py311"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+dbg_macro = "deny"
+todo = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

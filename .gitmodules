@@ -1,0 +1,3 @@
+[submodule "conformance/wvp"]
+	path = conformance/wvp
+	url = https://github.com/dekrops/wvp.git

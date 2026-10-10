@@ -1,0 +1,17 @@
+verified-python
+Copyright 2026 Verified AI
+
+This product is licensed under the Apache License, Version 2.0.
+
+It links, at build time, the following crates from
+https://github.com/dekrops/verified-cli (Apache-2.0), unmodified:
+verified-canonical, verified-protocol, verified-contract, verified-verifier,
+verified-work-unit.
+
+The directory conformance/wvp is a git submodule of
+https://github.com/dekrops/wvp. Its specifications are licensed under
+CC BY 4.0 and its vectors and examples under Apache-2.0. It is not part of
+the distributed package.
+
+Third-party Rust crates compiled into the native extension are listed, with
+their licenses, by `cargo deny list` / `cargo license` in rust/.

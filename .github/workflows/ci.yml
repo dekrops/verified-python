@@ -1,0 +1,161 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # A run that claims conformance must not skip the corpus.
+  VERIFIED_CONFORMANCE_REQUIRED: "1"
+
+jobs:
+  lint:
+    name: Lint and types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.0"
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --python 3.11 --group adapters
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run mypy
+      - run: cargo fmt --check
+        working-directory: rust
+      - run: cargo clippy --locked -- -D warnings
+        working-directory: rust
+
+  test:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.11", "3.14"]
+        include:
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: ubuntu-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.0"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --python ${{ matrix.python }}
+      # The core suite, with no optional framework installed.
+      - run: uv run pytest
+
+  adapters:
+    name: Framework adapters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.0"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --python 3.12 --group adapters
+      - run: uv run pytest tests/integration -m openai_agents
+
+  dependencies:
+    name: Dependency and license policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          manifest-path: rust/Cargo.toml
+          command: check
+          rust-version: "1.99.0"
+
+  wheels:
+    name: Wheel (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { os: ubuntu-latest, target: aarch64, manylinux: auto }
+          - { os: ubuntu-latest, target: x86_64, manylinux: musllinux_1_2 }
+          - { os: macos-latest, target: aarch64 }
+          - { os: macos-13, target: x86_64 }
+          - { os: windows-latest, target: x64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux || 'auto' }}
+          rust-toolchain: "1.99.0"
+          args: --release --locked --out dist
+      - name: Install the wheel and verify a package with it
+        # Only where the wheel matches the runner: cross-built wheels cannot be installed here.
+        if: runner.os != 'Linux' || (matrix.target == 'x86_64' && matrix.manylinux == 'auto')
+        shell: bash
+        run: |
+          python -m venv smoke
+          if [ -x smoke/bin/python ]; then PY=smoke/bin/python; else PY=smoke/Scripts/python.exe; fi
+          $PY -m pip install --no-index --find-links dist verified-python
+          $PY examples/standalone-verification/verify_packages.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.manylinux || 'native' }}
+          path: dist
+
+  sdist:
+    name: Source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.0"
+      - uses: astral-sh/setup-uv@v5
+      - name: Build and import from the sdist
+        run: |
+          uv venv --python 3.11 from-sdist
+          uv pip install --python from-sdist/bin/python dist/*.tar.gz
+          from-sdist/bin/python examples/standalone-verification/verify_packages.py
+      - run: uvx twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist

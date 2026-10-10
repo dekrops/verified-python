@@ -1,0 +1,151 @@
+{
+  "language": "work-contract-1",
+  "identity": {
+    "id": "support-chatbot-turn",
+    "version": "1.0.0"
+  },
+  "inputs": {
+    "session": {
+      "type": "text"
+    },
+    "turn": {
+      "type": "text"
+    }
+  },
+  "kinds": {
+    "credit": {
+      "key": [
+        "id"
+      ],
+      "fields": {
+        "id": {
+          "type": "text"
+        },
+        "session": {
+          "type": "text"
+        },
+        "turn": {
+          "type": "text"
+        },
+        "amount": {
+          "type": "money",
+          "currency": "EUR",
+          "scale": 2
+        },
+        "sessionTotal": {
+          "type": "money",
+          "currency": "EUR",
+          "scale": 2
+        }
+      }
+    },
+    "turn": {
+      "key": [
+        "id"
+      ],
+      "fields": {
+        "id": {
+          "type": "text"
+        },
+        "session": {
+          "type": "text"
+        },
+        "content": {
+          "type": "text"
+        }
+      }
+    }
+  },
+  "evidence": {
+    "conflicts": "unknown",
+    "sources": {
+      "credit": [
+        "tool-gateway"
+      ],
+      "turn": [
+        "chat-platform"
+      ]
+    }
+  },
+  "policy": {
+    "turn_credit_limit": {
+      "policy": {
+        "id": "POL-CREDIT-TURN",
+        "version": "1.0.0"
+      },
+      "type": {
+        "type": "money",
+        "currency": "EUR",
+        "scale": 2
+      },
+      "value": "10000"
+    }
+  },
+  "evaluation": {
+    "semantics": "kleene-1"
+  },
+  "requires": [
+    {
+      "id": "CREDIT_WITHIN_TURN_LIMIT",
+      "predicate": {
+        "forall": "c",
+        "in": "credit",
+        "holds": {
+          "or": [
+            {
+              "cmp": "ne",
+              "left": {
+                "var": "c",
+                "field": "turn"
+              },
+              "right": {
+                "input": "turn"
+              }
+            },
+            {
+              "cmp": "le",
+              "left": {
+                "var": "c",
+                "field": "amount"
+              },
+              "right": {
+                "param": "turn_credit_limit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "TURN_RECORDED",
+      "predicate": {
+        "exists": "t",
+        "in": "turn",
+        "where": {
+          "and": [
+            {
+              "cmp": "eq",
+              "left": {
+                "var": "t",
+                "field": "id"
+              },
+              "right": {
+                "input": "turn"
+              }
+            },
+            {
+              "cmp": "eq",
+              "left": {
+                "var": "t",
+                "field": "session"
+              },
+              "right": {
+                "input": "session"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

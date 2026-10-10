@@ -1,0 +1,32 @@
+{
+  "language": "work-contract-1",
+  "identity": { "id": "invoice-posting", "version": "1.0.0" },
+  "inputs": { "invoice": { "type": "text" } },
+  "kinds": {
+    "posting": {
+      "key": ["document"],
+      "fields": {
+        "document": { "type": "text" },
+        "invoice": { "type": "text" },
+        "amount": { "type": "money", "currency": "EUR", "scale": 2 }
+      }
+    }
+  },
+  "evidence": { "conflicts": "unknown", "sources": { "posting": ["erp"] } },
+  "policy": {},
+  "evaluation": { "semantics": "kleene-1" },
+  "requires": [
+    {
+      "id": "POSTED",
+      "predicate": {
+        "exists": "p",
+        "in": "posting",
+        "where": {
+          "cmp": "eq",
+          "left": { "var": "p", "field": "invoice" },
+          "right": { "input": "invoice" }
+        }
+      }
+    }
+  ]
+}

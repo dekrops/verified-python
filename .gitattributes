@@ -1,0 +1,2 @@
+# Packages and registries are exact bytes: canonical text, no final newline.
+examples/standalone-verification/*.json -text
