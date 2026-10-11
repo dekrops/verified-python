@@ -9,7 +9,7 @@ found when it looked at the rest of the ecosystem.
 | | |
 | --- | --- |
 | SDK | `verified-python` 0.1.0 |
-| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.3`, commit `519a2d200a05a6778f427cfeee14b5b7aafd277d`: `verified-history`, `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
+| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.4`, commit `4d41004eed165a2df65523f0d9753cbf050f306e`: `verified-history`, `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
 | Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `46ccd1d7c34d3a92e13a59f9235120f8d37395d7`, as the submodule `conformance/wvp` |
 | Python | 3.11 to 3.14 (one `abi3` extension) |
 
@@ -36,8 +36,10 @@ nullifier, key commitment).
 And, as a draft: work relation v1, reading only (`verified.read_history`).
 Given relations and the records they name, it reports each relation as
 checked, stated, contradicted or refused, whether a registered claim is a
-package's claim, and each stream's completeness. It verifies no record, and
-this SDK does not yet issue relations.
+package's claim, and each stream's completeness. It verifies no record. Of
+the three relations, this SDK issues one: `groups`
+(`EvidenceSource.group`), an application's statement that records belong
+together. `recorded` and `linked` are a ledger's to say.
 
 ## Measured against the corpus
 
@@ -176,7 +178,7 @@ wherever the difference could mislead. The site does not mention an SDK.
    SDK pinned three different revisions of the same crates. Upstream now
    tags its releases and states a convention that consumers exchanging
    packages pin the same tag. All three moved to `v0.1.0`; this SDK is on
-   `v0.1.3`, the third patch release, whose library API only grew.
+   `v0.1.4`, the fourth patch release, whose library API only grew.
 2. **Two producers.** Compliance Center and this SDK each built packages by
    hand. The producer is now upstream and this SDK uses it. Compliance
    Center can delete its own.

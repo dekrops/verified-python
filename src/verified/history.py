@@ -31,7 +31,8 @@ from enum import StrEnum
 from typing import Any, NoReturn
 
 from verified import _bridge
-from verified.canonical import Digest
+from verified.canonical import Digest, canonicalize
+from verified.records import WorkRecord
 from verified.trust import TrustRegistry
 
 __all__ = [
@@ -41,6 +42,7 @@ __all__ = [
     "Reference",
     "RelationRead",
     "SameClaim",
+    "SignedRelation",
     "Standing",
     "StreamCompleteness",
     "StreamRead",
@@ -90,6 +92,39 @@ class Reference:
 
     kind: str
     digest: Digest
+
+    @classmethod
+    def package(cls, package: WorkRecord | Digest) -> Reference:
+        """A package, by its package commitment: a commitment you hold, or
+        the one a work record states."""
+        commitment = package.package_commitment if isinstance(package, WorkRecord) else package
+        return cls(RecordKind.PACKAGE.value, commitment)
+
+    @classmethod
+    def work_record(cls, record: WorkRecord) -> Reference:
+        """A work record, by the digest of its canonical text."""
+        return cls(RecordKind.WORK_RECORD.value, Digest.of_bytes(canonicalize(record.to_json())))
+
+
+@dataclass(frozen=True, slots=True)
+class SignedRelation:
+    """A relation as it travels: the signed statement that carries it, and
+    the body the statement commits to.
+
+    It shows that its source said so. It does not show that what it says is
+    true, and it counts for a relying party only if that party's registry
+    trusts the signing key for the source.
+    """
+
+    statement: Mapping[str, Any]
+    """The signed evidence statement: ``{"statement": ..., "signature": ...}``."""
+    body: Mapping[str, Any]
+    """The relation body."""
+
+    def to_wire(self) -> dict[str, Any]:
+        """``{"statement": ..., "body": ...}``: what :func:`read_history`
+        reads, and what a history file holds."""
+        return {"statement": dict(self.statement), "body": dict(self.body)}
 
 
 @dataclass(frozen=True, slots=True)
@@ -224,7 +259,7 @@ class HistoryReading:
 
 
 def read_history(
-    relations: Iterable[Mapping[str, Any]],
+    relations: Iterable[SignedRelation | Mapping[str, Any]],
     records: Iterable[OfferedRecord | Mapping[str, Any]],
     trust: TrustRegistry,
 ) -> HistoryReading:
@@ -243,7 +278,10 @@ def read_history(
     offered = [r.to_wire() if isinstance(r, OfferedRecord) else r for r in records]
     raw = _bridge.call_json(
         "read_history",
-        _bridge.dumps(list(relations), where="relations"),
+        _bridge.dumps(
+            [r.to_wire() if isinstance(r, SignedRelation) else r for r in relations],
+            where="relations",
+        ),
         _bridge.dumps(offered, where="records"),
         trust.to_json(),
     )

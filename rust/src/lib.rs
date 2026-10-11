@@ -40,7 +40,7 @@ create_exception!(
 
 /// The revision of `dekrops/verified-cli` the verification crates are built
 /// from. Kept beside the pin in `Cargo.toml`; a test compares the two.
-const UPSTREAM_REVISION: &str = "519a2d200a05a6778f427cfeee14b5b7aafd277d";
+const UPSTREAM_REVISION: &str = "4d41004eed165a2df65523f0d9753cbf050f306e";
 
 /// The DER encoding of an Ed25519 `SubjectPublicKeyInfo` up to the key.
 const SPKI_PREFIX: [u8; 12] = [
@@ -292,6 +292,26 @@ fn read_history(relations: &[u8], records: &[u8], trust: &[u8]) -> PyResult<Stri
     Ok(history::reading(&relations, &records, &trust)?.to_canonical_string())
 }
 
+/// Lays out the statement by which a source says that records belong to one
+/// group (work relation v1, a draft). Returns `{ statement, body }`; the
+/// caller signs over the statement's signing input.
+#[pyfunction]
+#[pyo3(signature = (group, members, stated, *, stream=None, after=None))]
+fn prepare_group_relation(
+    group: &str,
+    members: &[u8],
+    stated: &[u8],
+    stream: Option<&str>,
+    after: Option<&[u8]>,
+) -> PyResult<String> {
+    let members = read(members, "members", "MALFORMED_JSON")?;
+    let stated = read(stated, "stated", "MALFORMED_JSON")?;
+    let after = after
+        .map(|after| read(after, "after", "MALFORMED_JSON"))
+        .transpose()?;
+    Ok(history::group(group, &members, &stated, stream, after.as_ref())?.to_canonical_string())
+}
+
 /// Assembles a `wvp-0.2` package and verifies it under `trust`. Returns the
 /// package text and the report, or raises if the verifier would not
 /// reproduce the package's decision completely.
@@ -377,6 +397,7 @@ fn _native(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(verify_chain, module)?)?;
     module.add_function(wrap_pyfunction!(admit, module)?)?;
     module.add_function(wrap_pyfunction!(read_history, module)?)?;
+    module.add_function(wrap_pyfunction!(prepare_group_relation, module)?)?;
     module.add_function(wrap_pyfunction!(assemble_package, module)?)?;
     module.add_function(wrap_pyfunction!(decision_signing_input, module)?)?;
     module.add_function(wrap_pyfunction!(attach_issuer_signature, module)?)?;
