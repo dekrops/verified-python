@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="470" height="96" viewBox="0 0 470 96" role="img" aria-labelledby="title">
+  <title id="title">verified for Python: the SDK for verifiable agent work</title>
+  <!-- The mark of dekrops/verified-cli: a run of linked records, as a commit
+       graph draws one. The last is open: nothing is known after it. Here it
+       sits at an interpreter's prompt instead of a shell's, with the
+       language beside it. For dark backgrounds. -->
+  <path d="M14 48 H74" fill="none" stroke="#f0f6fc" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="14" cy="48" r="9" fill="#f0f6fc"/>
+  <circle cx="44" cy="48" r="9" fill="#f0f6fc"/>
+  <circle cx="74" cy="48" r="9" fill="#0d1117" stroke="#f0f6fc" stroke-width="5"/>
+  <text x="104" y="62" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="40" xml:space="preserve"><tspan fill="#9198a1">&gt;&gt;&gt; </tspan><tspan fill="#f0f6fc" font-weight="700">verified</tspan><tspan fill="#ffd43b" font-weight="700" font-size="22" dx="8" dy="-16">py</tspan></text>
+</svg>

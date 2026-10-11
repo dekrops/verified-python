@@ -1,6 +1,51 @@
-# verified-python
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/dekrops/verified-python/main/docs/assets/wordmark-dark.svg">
+    <img src="https://raw.githubusercontent.com/dekrops/verified-python/main/docs/assets/wordmark-light.svg" alt="verified-python" width="440">
+  </picture>
+</h1>
 
-The Python SDK for the [Work Verification Protocol](https://github.com/dekrops/wvp) (WVP).
+<p align="center">
+  <strong>The Python SDK for verifiable agent work.</strong><br>
+  Produce a portable, signed account of what an agent did, and verify one
+  offline, without trusting the system that produced it.
+</p>
+
+<p align="center">
+  <a href="https://github.com/dekrops/verified-python/actions/workflows/ci.yml"><img src="https://github.com/dekrops/verified-python/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://pypi.org/project/verified-python/"><img src="https://img.shields.io/pypi/v/verified-python?label=pypi" alt="PyPI version"></a>
+  <a href="https://github.com/dekrops/verified-python/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
+  <a href="https://pypi.org/project/verified-python/"><img src="https://img.shields.io/badge/python-3.11%2B-3776ab" alt="Python 3.11+"></a>
+  <a href="https://github.com/dekrops/wvp"><img src="https://img.shields.io/badge/protocol-WVP%20draft-lightgrey" alt="Protocol: WVP, draft"></a>
+</p>
+
+```pycon
+>>> from verified import TrustRegistry, Verifier
+>>> examples = "examples/standalone-verification"
+>>> verifier = Verifier(trust=TrustRegistry.load(f"{examples}/trust.json"))
+>>> result = verifier.verify(f"{examples}/contradicted.json")
+>>> result.verification_status.value, str(result.decision)
+('complete', 'CONTRADICTED')
+>>> result.source_truthfulness.status.value
+'not_established'
+>>> result.require_supported()
+Traceback (most recent call last):
+  ...
+verified.errors.RequirementNotMet: the reproduced decision is CONTRADICTED, not SUPPORTED
+```
+
+> **Status: developer preview (0.1.0).** The
+> [Work Verification Protocol](https://github.com/dekrops/wvp) (WVP) is a
+> draft in every version. This SDK has not been security-audited, and its API
+> will change. Read
+> [what is and is not supported](docs/protocol-compatibility.md) before
+> relying on it.
+>
+> **Open source under the [Apache License 2.0](LICENSE).** On PyPI as
+> [`verified-python`](https://pypi.org/project/verified-python/); the import
+> name is `verified`.
+
+## What it is
 
 > What did this agent do, under which authority, with what evidence, according
 > to which contract, and can an independent party reproduce the result?
@@ -9,15 +54,8 @@ The Python SDK for the [Work Verification Protocol](https://github.com/dekrops/w
 of a unit of work, and lets anyone verify it offline. Verification is performed
 by the same Rust crates as the [`verified` CLI](https://github.com/dekrops/verified-cli),
 bound natively; the Python layer adds an API, not a second implementation.
-
-**Status: developer preview (0.1.0).** WVP is a draft in every version. This
-SDK has not been security-audited, and its API will change.
-Read [what is and is not supported](docs/protocol-compatibility.md) before
-relying on it.
-
-```text
-Any agent. Any runtime. Independently verifiable work.
-```
+The [TypeScript SDK](https://github.com/dekrops/verified-typescript) binds the
+same crates, with the same result model and names.
 
 ## Install
 
@@ -248,6 +286,7 @@ decide whether verified work is accepted, payable or compliant.
 
 - [`dekrops/wvp`](https://github.com/dekrops/wvp): the specifications and conformance vectors. Normative.
 - [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli): the Rust implementation this SDK binds, and the `verified` command.
+- [`dekrops/verified-typescript`](https://github.com/dekrops/verified-typescript): the TypeScript SDK, with the same result model and names.
 - `dekrops/agent-billing-center`, `dekrops/agent-compliance-center`: reference applications built on verified work.
 - `dekrops/verified`: the commercial Work Verification Platform. Not required by anything here.
 
