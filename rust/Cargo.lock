@@ -344,8 +344,8 @@ checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
 
 [[package]]
 name = "verified-canonical"
-version = "0.1.1"
-source = "git+https://github.com/dekrops/verified-cli?rev=0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a#0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
 dependencies = [
  "sha2",
  "thiserror",
@@ -353,16 +353,26 @@ dependencies = [
 
 [[package]]
 name = "verified-contract"
-version = "0.1.1"
-source = "git+https://github.com/dekrops/verified-cli?rev=0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a#0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
 dependencies = [
  "verified-canonical",
 ]
 
 [[package]]
+name = "verified-history"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
+dependencies = [
+ "verified-canonical",
+ "verified-protocol",
+ "verified-verifier",
+]
+
+[[package]]
 name = "verified-protocol"
-version = "0.1.1"
-source = "git+https://github.com/dekrops/verified-cli?rev=0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a#0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
 dependencies = [
  "thiserror",
  "verified-canonical",
@@ -377,6 +387,7 @@ dependencies = [
  "pyo3",
  "verified-canonical",
  "verified-contract",
+ "verified-history",
  "verified-protocol",
  "verified-verifier",
  "verified-work-unit",
@@ -384,8 +395,8 @@ dependencies = [
 
 [[package]]
 name = "verified-verifier"
-version = "0.1.1"
-source = "git+https://github.com/dekrops/verified-cli?rev=0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a#0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
 dependencies = [
  "base64",
  "ed25519-dalek",
@@ -397,8 +408,8 @@ dependencies = [
 
 [[package]]
 name = "verified-work-unit"
-version = "0.1.1"
-source = "git+https://github.com/dekrops/verified-cli?rev=0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a#0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a"
+version = "0.1.3"
+source = "git+https://github.com/dekrops/verified-cli?rev=519a2d200a05a6778f427cfeee14b5b7aafd277d#519a2d200a05a6778f427cfeee14b5b7aafd277d"
 dependencies = [
  "hmac",
  "sha2",

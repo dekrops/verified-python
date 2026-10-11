@@ -6,6 +6,17 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `verified.read_history`: reads work relations (work relation v1, a draft)
+  against the records given with them, under your trust registry. A relation
+  is a signed statement by which a ledger or an application says how the
+  records of one unit of work are related. Each relation is reported as
+  `CHECKED`, `STATED`, `CONTRADICTED` or `REFUSED`; a `HistoryReading` has
+  no truth value, and reading verifies no record. The rules are upstream's
+  `verified-history` crate; the 41 cases of the published corpus are
+  reproduced.
+
 ### Fixed
 
 - Wheels now carry `THIRD-PARTY-LICENSES.md`: the licenses and notices of the
@@ -21,7 +32,8 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- The native extension is built on `dekrops/verified-cli` `v0.1.1`. The
+- The native extension is built on `dekrops/verified-cli` `v0.1.3`, and the
+  conformance corpus is `dekrops/wvp` at `46ccd1d`. From `v0.1.1`, the
   report `verify` returns is now produced by the upstream library
   (`Report::to_value`) instead of a copy of that mapping in this repository;
   its members are unchanged.

@@ -9,8 +9,8 @@ found when it looked at the rest of the ecosystem.
 | | |
 | --- | --- |
 | SDK | `verified-python` 0.1.0 |
-| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.1`, commit `0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a`: `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
-| Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `c7c9de2a7e8ad67e7dcee46d5c5f7fc2edccb797`, as the submodule `conformance/wvp` |
+| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.3`, commit `519a2d200a05a6778f427cfeee14b5b7aafd277d`: `verified-history`, `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
+| Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `46ccd1d7c34d3a92e13a59f9235120f8d37395d7`, as the submodule `conformance/wvp` |
 | Python | 3.11 to 3.14 (one `abi3` extension) |
 
 `verified.build_info()` reports the same revision at run time, every
@@ -33,9 +33,15 @@ statement chains (verify), admission, Work Contract Language 1 (read, and
 evaluate through package assembly), work-unit identity v1 (identity,
 nullifier, key commitment).
 
+And, as a draft: work relation v1, reading only (`verified.read_history`).
+Given relations and the records they name, it reports each relation as
+checked, stated, contradicted or refused, whether a registered claim is a
+package's claim, and each stream's completeness. It verifies no record, and
+this SDK does not yet issue relations.
+
 ## Measured against the corpus
 
-Run on 2026-10-10 by `tests/conformance/test_corpus.py`, through the public
+Run on 2026-10-11 by `tests/conformance/test_corpus.py`, through the public
 Python API where one exists. Every expectation is compared in full, never by
 refusal code alone. CI runs it with `VERIFIED_CONFORMANCE_REQUIRED=1`, so a
 missing corpus fails instead of skipping.
@@ -50,7 +56,8 @@ missing corpus fails instead of skipping.
 | `work-contract/v1`, 82 case files and 5 differential batches | 641 cases reproduced, from 81 case files and the 5 batches. 1 case file cannot be represented (below) |
 | `work-unit/v1/vectors.json` | 3 of 3 key commitments and 10 of 10 identities and nullifiers |
 | `evidence-statement/v1`, 39 vectors | 39 reproduced: 17 statement, 13 chain, 9 admission. **Not compared:** `verificationResultSha256` and `verificationStatus` of the 3 accepted admissions, which are the platform's result and are not computed by the shared crates |
-| `claim-registration/v1` (123 cases in six files) | **Not run.** Claim registration is not bound in this release (see below) |
+| `work-relation/v1/vectors.json`, 41 cases | 41 reproduced: the whole reading of each, as the shared reader states it |
+| `claim-registration/v1` (163 cases in seven files) | **Not run.** Claim registration is not bound in this release (see below) |
 
 `72-scale-not-whole` gives a type a fractional `scale`. `verified-json-v1` has
 no fractions, so the shared reader refuses the file's text before any contract
@@ -169,7 +176,7 @@ wherever the difference could mislead. The site does not mention an SDK.
    SDK pinned three different revisions of the same crates. Upstream now
    tags its releases and states a convention that consumers exchanging
    packages pin the same tag. All three moved to `v0.1.0`; this SDK is on
-   `v0.1.1`, a patch release whose library API only grew.
+   `v0.1.3`, the third patch release, whose library API only grew.
 2. **Two producers.** Compliance Center and this SDK each built packages by
    hand. The producer is now upstream and this SDK uses it. Compliance
    Center can delete its own.

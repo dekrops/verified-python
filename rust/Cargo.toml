@@ -16,15 +16,16 @@ name = "_native"
 crate-type = ["cdylib"]
 
 # The verification crates are pinned to the commit of a tag of
-# dekrops/verified-cli (v0.1.1). They are not on
-# crates.io. Change all five together, with the result tables in
+# dekrops/verified-cli (v0.1.3). They are not on
+# crates.io. Change all six together, with the result tables in
 # docs/protocol-compatibility.md, in one pull request.
 [dependencies]
-verified-canonical = { git = "https://github.com/dekrops/verified-cli", rev = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a", version = "0.1.1" }
-verified-contract = { git = "https://github.com/dekrops/verified-cli", rev = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a", version = "0.1.1" }
-verified-protocol = { git = "https://github.com/dekrops/verified-cli", rev = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a", version = "0.1.1" }
-verified-verifier = { git = "https://github.com/dekrops/verified-cli", rev = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a", version = "0.1.1" }
-verified-work-unit = { git = "https://github.com/dekrops/verified-cli", rev = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a", version = "0.1.1" }
+verified-canonical = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
+verified-contract = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
+verified-history = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
+verified-protocol = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
+verified-verifier = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
+verified-work-unit = { git = "https://github.com/dekrops/verified-cli", rev = "519a2d200a05a6778f427cfeee14b5b7aafd277d", version = "0.1.3" }
 
 base64 = "0.23.1"
 ed25519-dalek = { version = "3.0.0", default-features = false }
