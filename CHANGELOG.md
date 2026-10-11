@@ -16,6 +16,11 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   no truth value, and reading verifies no record. The rules are upstream's
   `verified-history` crate; the 41 cases of the published corpus are
   reproduced.
+- `EvidenceSource.group`: signs a source's statement that packages or work
+  records belong to one group (the `groups` relation), optionally chained in
+  a stream so that a reader can see none is missing. `Reference.package` and
+  `Reference.work_record` name the members. The statement is laid out by
+  upstream's producer, which refuses a relation a reader would refuse.
 
 ### Fixed
 
@@ -32,7 +37,7 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- The native extension is built on `dekrops/verified-cli` `v0.1.3`, and the
+- The native extension is built on `dekrops/verified-cli` `v0.1.4`, and the
   conformance corpus is `dekrops/wvp` at `46ccd1d`. From `v0.1.1`, the
   report `verify` returns is now produced by the upstream library
   (`Report::to_value`) instead of a copy of that mapping in this repository;

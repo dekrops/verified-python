@@ -46,12 +46,12 @@ In rough order of leverage:
    vectors.
 5. **Platform service integration**, once the platform has a versioned API
    and service credentials: submit packages, fetch records. Optional module.
-6. **Issuing work relations.** The protocol now has a multi-claim object:
-   work relation v1 (draft), whose `groups` relation says that packages or
-   work records belong to one group. This SDK reads relations
-   (`verified.read_history`); issuing one, as an evidence statement signed
-   under an application's own source, is next. Detached application
-   signatures under caller-owned domains remain open.
+6. **A session's packages as one group.** The protocol's multi-claim
+   object is the `groups` relation of work relation v1 (draft). This SDK
+   reads relations (`verified.read_history`) and issues that one
+   (`EvidenceSource.group`). Next: `WorkSession` grouping the packages it
+   issued without the caller listing them. Detached application signatures
+   under caller-owned domains remain open.
 7. **Release the GIL** during verification, and an `async` convenience, if
    measurements on large packages justify it.
 8. **Documentation site** (mkdocs-material) with API reference generated from

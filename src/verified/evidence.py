@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
@@ -26,6 +26,7 @@ from typing import Any
 from verified import _bridge
 from verified._time import Clock, epoch_seconds, instant, now
 from verified.canonical import Digest
+from verified.history import Reference, SignedRelation
 from verified.signing import Signer, SigningAuthority, encode_signature
 from verified.trust import TrustRegistry
 from verified.verification import Refusal
@@ -351,6 +352,73 @@ class EvidenceSource:
             observed_at=observed_at if observed_at is not None else self._clock(),
             observation_id=observation_id,
             evidence_id=evidence_id,
+        )
+
+    def group(
+        self,
+        name: str,
+        members: Iterable[Reference],
+        *,
+        observed_at: datetime | str | None = None,
+        observation_id: str | None = None,
+        evidence_id: str | uuid.UUID | None = None,
+        stream: str | None = None,
+        after: SignedRelation | None = None,
+    ) -> SignedRelation:
+        """Signs this source's statement that records belong to one group
+        (work relation v1, a draft).
+
+        ``members`` name packages or work records, in any order. What a group
+        is, a session or a batch, is this source's to define. The statement
+        says the members belong together. It does not say the group is
+        complete, that its members are true, or that they agree.
+
+        To let a reader see that no statement is missing, chain the relations
+        in a stream of their own: start one with ``stream`` and continue it
+        with ``after``, the relation signed before. Nothing shows what
+        follows the last one.
+
+        The layout is the shared library's, which refuses a relation a reader
+        would refuse; this method only supplies what the source states and
+        signs.
+        """
+        if not isinstance(name, str):
+            raise TypeError("a group's name is text")
+        listed = list(members)
+        if not all(isinstance(member, Reference) for member in listed):
+            raise TypeError("members are Reference values")
+        identifier = str(uuid.UUID(str(evidence_id))) if evidence_id else str(uuid.uuid4())
+        observed = observed_at if observed_at is not None else self._clock()
+        stated = {
+            "id": {"value": identifier},
+            "issuer": {"value": self._authority.issuer},
+            "observedAt": {"value": instant(observed)},
+            "source": {
+                "system": self._system,
+                "observationId": observation_id or f"{self._system}:{identifier}",
+            },
+            "tenant": {"value": self._authority.tenant},
+        }
+        prepared = _bridge.call_json(
+            "prepare_group_relation",
+            name,
+            _bridge.dumps(
+                [{"kind": str(member.kind), "hex": member.digest.hex} for member in listed],
+                where="members",
+            ),
+            _bridge.dumps(stated, where="stated"),
+            stream=stream,
+            after=_bridge.dumps(dict(after.statement)) if after is not None else None,
+        )
+        message: bytes = _bridge.call(
+            "statement_signing_input", _bridge.dumps(prepared["statement"])
+        )
+        return SignedRelation(
+            statement={
+                "statement": prepared["statement"],
+                "signature": encode_signature(self._signer, message),
+            },
+            body=prepared["body"],
         )
 
     def complete(
