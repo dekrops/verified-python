@@ -108,9 +108,8 @@ def test_evidence_that_does_not_fit_the_contract_is_an_assembly_error(parties: P
     )
     work = parties.work()
     work.attach(misfit).claim()
-    with pytest.raises(AssemblyError) as raised:
+    with pytest.raises(AssemblyError, match=r"INPUT_MISMATCH.*ENVIRONMENT_NONCONFORMING"):
         work.issue(trust=parties.trust)
-    assert raised.value.code == "ENVIRONMENT_NONCONFORMING"
     assert work.state is WorkState.CLAIMED
 
 

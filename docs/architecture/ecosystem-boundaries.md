@@ -51,34 +51,31 @@ instrumentation.
 | Risk | Mitigation here |
 | --- | --- |
 | **Semantic divergence** between Scala, Rust, Python and applications | One implementation of the rules (the Rust crates), bound not rewritten. The published corpus runs in CI through the Python API. |
-| **Duplicated implementations** of signing, canonicalization, contracts | The SDK calls upstream for all of them. The one piece it had to write, the package producer, is in Rust beside the verifier, self-checked on every use, and proposed upstream. |
+| **Duplicated implementations** of signing, canonicalization, contracts | The SDK calls upstream for all of them, issuing included: the producer first written here now lives upstream beside the verifier. |
 | **Protocol ownership confusion** | `wvp` is pinned as a submodule and treated as the contract. Expectations are never edited. |
 | **Confusing product boundaries** | No billing, compliance or platform logic; see the table above. |
-| **Version drift** between consumers | One pinned revision, reported at run time and on every result; a test ties the pins together. Still open across repositories: see proposal 3. |
+| **Version drift** between consumers | The SDK pins the upstream tag that the applications pin, reports it at run time and on every result, and a test ties the pins together. |
 | **Misleading verification** | The result type, `require_*`, `bool()` raising, `trust` without a default, `stated` kept apart from verified values. |
 | **SDK proliferation** | The extension's surface is bytes and JSON text, so the same Rust facade can back a Node (napi) or WASM binding. See proposal 2. |
 | **Distribution complexity** | One `abi3` wheel per platform covers every supported Python; wheels for Linux, macOS and Windows build in CI. |
 
 ## Proposed upstream changes
 
-None of these is implemented here, and nothing was changed in another
-repository.
+Proposals 1 and 3 have been carried out upstream. The others are open, and
+nothing else was changed in another repository.
 
-1. **A producer in `verified-cli`** (a `verified-producer` crate, or
-   `verified_verifier::assemble`): build the environment of WVP v0.2 §2, the
-   decision document of §4, and the container. Today Compliance Center
-   (`acc-wvp`) and this SDK (`rust/src/issue.rs`) each do it by hand. With it,
-   both delete code and a producer can no longer disagree with the verifier.
-   Smallest useful step: make `environment` and `decision_document` public.
+1. **Done: a producer in `verified-cli`.** `verified_verifier::issue`
+   (upstream ADR 0013) evaluates and lays out `wvp-0.2` packages with the
+   verifier's own code. This SDK uses it. Compliance Center (`acc-wvp`) can
+   now delete its producer.
 2. **A report-to-JSON function in a library crate.** The `verify --json`
    shape is documented as the contract for SDKs but is implemented inside the
    binary. This SDK re-implements the mapping (`rust/src/report.rs`).
    Exporting it (`verified_verifier::report_json`, or a small `verified-json`
    crate) gives every binding the same output for free.
-3. **A tagged release and a shared pin.** Three consumers pin three
-   revisions. A first tag, plus a `conformance/upstream.json` convention that
-   all consumers share (Billing Center and Compliance Center already have
-   one), turns drift into a visible diff.
+3. **Done: a tagged release and a shared pin.** Upstream is tagged
+   `v0.1.0`, with semantic versioning for the library crates and a stated
+   convention that consumers exchanging packages pin the same tag.
 4. **Typed accessors on `Contract`**: declared inputs, kinds, accepted
    sources, requirement identifiers, policy parameters. Consumers currently
    read them from raw JSON.
@@ -98,6 +95,6 @@ repository.
 Not yet. The crates already live in one public repository and can be pinned
 by revision. Extraction into a separately versioned `verified-core` becomes
 worth its cost when a second SDK needs releases on a cadence the CLI's does
-not fit, or when the binding facade (proposal 2 plus the producer) is shared
+not fit, or when the binding facade (proposal 2) is shared
 by two languages. Until then a new repository would add a pin to manage
 without removing one.

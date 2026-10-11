@@ -9,7 +9,7 @@ found when it looked at the rest of the ecosystem.
 | | |
 | --- | --- |
 | SDK | `verified-python` 0.1.0 |
-| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) at `fda35a57d081889f8f0a4409cf1fa41e7dd919ab` (`main`, 2026-10-10): `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
+| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.0`, commit `d270ae07150aeb1feb31896f234173f47ce36db0`: `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
 | Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `c7c9de2a7e8ad67e7dcee46d5c5f7fc2edccb797`, as the submodule `conformance/wvp` |
 | Python | 3.11 to 3.14 (one `abi3` extension) |
 
@@ -109,14 +109,15 @@ claim-registration changed in the platform after the last publication.
 ### `dekrops/verified-cli` (public, Apache-2.0)
 
 Five library crates and a binary. Verification is complete for both protocol
-versions and passes the corpus. The library reads and verifies; **it has no
-producer**: no function builds a package, an environment or a decision
-document. Its Rust API is declared unstable, there is no tag and no published
-crate. Its own ADR 0007 anticipated a first SDK wrapping the command's JSON
-output and left "PyO3 or pure Python" open.
-**Consequence:** this SDK binds the crates directly, pins a commit, mirrors
-the documented `verify --json` shape so there is one contract, and carries a
-small producer of its own (see [rust-python-interop](architecture/rust-python-interop.md)).
+versions and passes the corpus. When this SDK was first written the library
+had no producer, no tag and an API declared unstable; its own ADR 0007
+anticipated a first SDK wrapping the command's JSON output and left "PyO3 or
+pure Python" open. Since then it has gained `verified_verifier::issue` (its
+ADR 0013), contributed from this SDK's first producer, and a first tag,
+`v0.1.0`, with a compatibility policy for the library crates.
+**Consequence:** this SDK binds the crates directly at that tag, mirrors the
+documented `verify --json` shape so there is one contract, and issues
+packages through the upstream producer.
 
 ### `dekrops/agent-billing-center`
 
@@ -134,7 +135,8 @@ computes the same identity and nullifier. A test pins this.
 Pins a third revision (`ab74d41…`). Each turn and each session is its own
 `wvp-0.2` package under its own contract; nothing derives the session's
 result from the turns'. It contains its own producer (`acc-wvp`), including a
-re-implementation of the environment construction, because upstream has none.
+re-implementation of the environment construction, written before upstream
+had one.
 Its session-level attestation bundle is an application format.
 **Consequence:** this SDK exposes generic turn and session primitives and a
 producer, and does not copy the policy pack, the PASS/FAIL mapping or the
@@ -163,12 +165,16 @@ wherever the difference could mislead. The site does not mention an SDK.
 ### Three things the assessment found that matter beyond this SDK
 
 1. **Three consumers, three pins.** Billing Center, Compliance Center and this
-   SDK pin three different revisions of the same unstable crates. Their
-   packages interoperate today because the protocol did not change between
-   those revisions; nothing enforces that.
-2. **Two producers.** Compliance Center and this SDK each build packages by
-   hand. A shared producer upstream would remove both.
+   SDK pinned three different revisions of the same crates. Upstream now has
+   a tag, `v0.1.0`, and a stated convention that consumers exchanging
+   packages pin the same one; this SDK pins it, and pull requests move the
+   two applications to it.
+2. **Two producers.** Compliance Center and this SDK each built packages by
+   hand. The producer is now upstream and this SDK uses it. Compliance
+   Center can delete its own.
 3. **The name `verified` is taken on PyPI** by an unrelated distribution.
    `verified-python` is free as a distribution name, but two distributions
    providing a top-level `verified` package cannot be installed together.
-   This needs a decision before the first upload.
+   The other project is a single template-only `0.0.0` release from 2025.
+   The decision taken: ship as `verified-python` with `import verified`, and
+   request the bare name under PEP 541.

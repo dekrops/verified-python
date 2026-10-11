@@ -6,6 +6,15 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Packages are issued by upstream's `verified_verifier::issue`; the SDK's own
+  producer is deleted.
+- The verification crates are pinned to `dekrops/verified-cli` `v0.1.0`
+  (`d270ae0`), the tag Agent Billing Center and Agent Compliance Center pin.
+- A claim or evidence that does not fit the contract is reported as the
+  protocol's `INPUT_MISMATCH` when issuing.
+
 ## [0.1.0] - unreleased developer preview
 
 First scaffold. Not published to PyPI.
@@ -23,7 +32,7 @@ First scaffold. Not published to PyPI.
 - Work-unit identity and nullifiers: `work_unit`, `WorkUnitScope`.
 - Instrumentation: `WorkSession`, `verified_tool`, `ExecutionTrace`.
 - OpenAI Agents SDK adapter: `verified.integrations.openai_agents`.
-- Native extension over `dekrops/verified-cli` at `fda35a5`.
+- Native extension over `dekrops/verified-cli`.
 - Conformance suite against `dekrops/wvp` at `c7c9de2`.
 
 ### Compatibility

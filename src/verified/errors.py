@@ -107,10 +107,11 @@ class LifecycleError(VerifiedError):
 class AssemblyError(VerifiedError):
     """A package could not be issued.
 
-    ``code`` is ``ASSEMBLY_REFUSED`` when the shared verifier would not
-    reproduce the package completely under the issuer's registry (the message
-    names the protocol refusal), or a contract-language refusal code when the
-    contract cannot be evaluated against the claim and evidence.
+    The shared verifier would not reproduce the package completely under the
+    issuer's registry. The message names the protocol refusal: for example
+    ``SOURCE_NOT_AUTHORIZED`` for a statement whose key may not speak for the
+    system it names, or ``INPUT_MISMATCH`` for a claim or evidence that does
+    not fit the contract.
     """
 
     def __init__(self, code: str, message: str) -> None:

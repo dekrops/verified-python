@@ -53,7 +53,8 @@ The adapter tests need the optional framework:
 One pull request that changes the five `rev` values in `rust/Cargo.toml`,
 `UPSTREAM_REVISION` in `rust/src/lib.rs`, `rust/Cargo.lock`, and the tables in
 `docs/protocol-compatibility.md`, after reading the upstream changes in
-between. Nothing else in it.
+between. Nothing else in it. Pin a tag's commit, and move with Agent Billing
+Center and Agent Compliance Center so that all three verify with one revision.
 
 ## Versioning and stability
 
