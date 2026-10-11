@@ -132,7 +132,7 @@ jobs:
           if [ -x smoke/bin/python ]; then PY=smoke/bin/python; else PY=smoke/Scripts/python.exe; fi
           $PY -m pip install --no-index --find-links dist verified-python
           $PY examples/standalone-verification/verify_packages.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wheel-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.manylinux || 'native' }}
           path: dist
@@ -156,7 +156,7 @@ jobs:
           uv pip install --python from-sdist/bin/python dist/*.tar.gz
           from-sdist/bin/python examples/standalone-verification/verify_packages.py
       - run: uvx twine check dist/*
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: sdist
           path: dist
