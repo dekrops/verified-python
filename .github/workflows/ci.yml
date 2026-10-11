@@ -32,7 +32,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --python 3.11 --group adapters
       - run: uv run ruff format --check .
       - run: uv run ruff check .
@@ -65,7 +65,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --python ${{ matrix.python }}
       # The core suite, with no optional framework installed.
       - run: uv run pytest
@@ -83,7 +83,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --python 3.12 --group adapters
       - run: uv run pytest tests/integration -m "openai_agents or langgraph"
 
@@ -149,7 +149,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: "1.99.0"
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - name: Build and import from the sdist
         run: |
           uv venv --python 3.11 from-sdist
