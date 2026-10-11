@@ -38,6 +38,7 @@ rule of the protocol.
 | `verified.instrumentation` | `WorkSession`, `TraceEvent`, `ExecutionTrace` | nothing |
 | `verified.integrations.generic` | `verified_tool` | nothing |
 | `verified.integrations.openai_agents` | `VerifiedRunHooks` | the `openai-agents` extra |
+| `verified.integrations.langgraph` | `VerifiedCallbackHandler` | the `langgraph` extra |
 | `verified._bridge` | The only importer of `verified._native` | |
 
 Three entry points are independent of one another:

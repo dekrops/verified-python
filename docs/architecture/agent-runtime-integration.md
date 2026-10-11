@@ -23,8 +23,8 @@ Everything a framework adapter needs is on `WorkSession`:
 | Correlation with an existing tracer | `WorkSession(trace_context=…)` |
 | Live events for a sink | `WorkSession(on_event=…)` |
 
-An adapter is a translation from a framework's callbacks to these calls. The
-OpenAI Agents adapter is about a hundred lines.
+An adapter is a translation from a framework's callbacks to these calls. Each
+of the two included is under 150 lines.
 
 `WorkSession.current()` returns the session entered in the current thread or
 task (a `contextvars` variable), which is how `verified_tool` and adapters
@@ -105,12 +105,12 @@ package.
 
 ## Framework adapters
 
-Assessed for the first release:
+Assessed for the first release, with what has been built since:
 
 | Framework | Hook surface | Fit | State |
 | --- | --- | --- | --- |
 | **OpenAI Agents SDK** | `RunHooks`: agent start/end, tool start/end with a tool call id, handoff | Direct; function tools run in the caller's context, so `verified_tool` finds the session | **Adapter included**, tested against the real SDK with a scripted model |
-| LangGraph / LangChain | `BaseCallbackHandler` (`on_tool_start/end/error`, `on_chain_*`), run ids, config propagation | Good; needs care with context propagation across graph nodes and threads | Not built |
+| **LangGraph** | `BaseCallbackHandler` (`on_tool_start/end/error`, `on_chain_*`), run ids, node metadata | Good; nodes run in a copy of the caller's context, so `verified_tool` finds the session | **Adapter included**, tested against the real framework with a scripted model |
 | Google ADK | `before_/after_agent_callback`, `before_/after_tool_callback` | Good, per-agent callbacks | Not built |
 | Generic callbacks | none needed | `WorkSession` is the adapter | Included (`verified_tool`) |
 
@@ -132,6 +132,25 @@ note), sessions/memory, and any real model provider.
 One behaviour to know: by default the Agents SDK turns a failing function
 tool into a message for the model and reports the tool as ended. So
 `tool_finished` from the hook means "the call ended", never "it worked".
+
+### What "supported" means for the LangGraph adapter
+
+Tested: `invoke` and `ainvoke` of a compiled `StateGraph` with a model node
+and a prebuilt `ToolNode`; the handler recording the run, its nodes and its
+tool calls with the model's tool call id as correlation id; a `verified_tool`
+tool opening work; a failing tool that the tool node turns into a message;
+and a failing tool that ends the run. Tested against `langgraph` 1.2 and
+`langchain-core` 1.6.
+
+Not tested, so not claimed: streaming (`stream`, `astream_events`),
+subgraphs, interrupts and human-in-the-loop, checkpointers and resumed runs,
+`Send` fan-out, the LangGraph Platform, LangChain agents outside a graph, and
+any real model provider.
+
+One behaviour to know: a `ToolNode` that handles tool errors turns an
+exception into a message for the model, and the run goes on. The handler
+still records `tool_failed`, because LangChain reports the error before the
+node handles it.
 
 ## OpenTelemetry
 
