@@ -71,8 +71,8 @@ deleted here ([decision 0005](../decisions/0005-producer-with-self-check.md)).
 
 ## Pinning and upgrades
 
-The five crates are git dependencies pinned to the commit of an upstream tag
-(`rust/Cargo.toml`, currently `v0.1.1`), locked in `rust/Cargo.lock`, built
+The six crates are git dependencies pinned to the commit of an upstream tag
+(`rust/Cargo.toml`, currently `v0.1.3`), locked in `rust/Cargo.lock`, built
 with `--locked`. Upstream's library API follows semantic versioning from its
 first tag, and asks consumers that exchange packages to pin the same tag.
 Agent Billing Center and Agent Compliance Center record theirs in

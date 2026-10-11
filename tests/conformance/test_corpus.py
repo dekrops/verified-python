@@ -24,6 +24,7 @@ from verified import (
     WorkUnitScope,
     _bridge,
     canonicalize,
+    read_history,
     work_unit,
 )
 from verified.errors import UnsupportedOperationError
@@ -327,3 +328,37 @@ def test_the_evidence_corpus_is_the_published_size() -> None:
         pytest.skip("no corpus")
     kinds = [load(path)["kind"] for path in STATEMENT_VECTORS]
     assert (kinds.count("statement"), kinds.count("chain"), kinds.count("admission")) == (17, 13, 9)
+
+
+# --- work relation v1 (draft) -------------------------------------------------
+
+
+def relation_cases() -> list[dict[str, Any]]:
+    if CORPUS is None:
+        return []
+    cases: list[dict[str, Any]] = load(CORPUS / "work-relation" / "v1" / "vectors.json")["cases"]
+    return cases
+
+
+RELATION_CASES = relation_cases()
+
+
+@pytest.mark.parametrize("case", RELATION_CASES, ids=[case["name"] for case in RELATION_CASES])
+def test_work_relation_case(case: dict[str, Any]) -> None:
+    trust = TrustRegistry.from_json(json.dumps(case["trust"]).encode())
+    reading = read_history(case["relations"], case["records"], trust)
+    # The whole reading: every record, every relation's standing, every
+    # derived relation and every stream.
+    assert reading.raw == case["expected"]
+    # And the typed view says what the reading says.
+    assert [read.standing.value for read in reading.relations] == [
+        read["standing"] for read in case["expected"]["relations"]
+    ]
+    assert len(reading.records) == len(case["records"])
+    assert reading.records_verified is False
+
+
+def test_the_work_relation_corpus_is_the_published_size() -> None:
+    if CORPUS is None:
+        pytest.skip("no corpus")
+    assert len(RELATION_CASES) == 41
