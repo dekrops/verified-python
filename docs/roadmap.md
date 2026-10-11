@@ -25,7 +25,7 @@ Working and tested:
 - **Packaging foundations**: maturin, one `abi3` wheel per platform, CI for
   lint, types, tests, conformance and wheels.
 
-Known gaps at this horizon: not on PyPI; no security review; claim
+Known gaps at this horizon: no security review; claim
 registration not bound; no platform client; source builds need Rust and
 network access.
 
@@ -33,9 +33,9 @@ network access.
 
 In rough order of leverage:
 
-1. **Publish wheels.** Register the project, resolve the `verified` import
-   name question (an unrelated distribution owns `verified` on PyPI), and
-   release through trusted publishing.
+1. **Settle the bare name.** Wheels are published as `verified-python`. An
+   unrelated placeholder owns `verified` on PyPI; a PEP 541 request asks for
+   it, so that `pip install verified` cannot install something else.
 2. **Move the report-to-JSON mapping upstream** (`rust/src/report.rs`), as
    the producer was.
 3. **Stable framework adapters**: LangGraph, then Google ADK, each with
