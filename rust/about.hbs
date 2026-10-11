@@ -1,0 +1,31 @@
+# Third-party licenses
+
+The native extension of `verified-python` (`verified._native`) links the Rust
+crates below. Their licenses require these notices and texts to accompany a
+binary distribution, so this file ships in every wheel. It is generated from
+`rust/Cargo.lock` by
+[cargo-about](https://github.com/EmbarkStudios/cargo-about) (see
+`rust/about.toml`); do not edit it by hand.
+
+This project's own license is in `LICENSE`, and its notices are in `NOTICE`.
+
+## Overview
+
+{{#each overview}}
+- {{{name}}}: {{count}} crate{{#if (gt count 1)}}s{{/if}}
+{{/each}}
+
+## Licenses
+{{#each licenses}}
+
+### {{{name}}}
+
+Used by:
+{{#each used_by}}
+- [{{crate.name}} {{crate.version}}]({{#if crate.repository}}{{crate.repository}}{{else}}https://crates.io/crates/{{crate.name}}{{/if}})
+{{/each}}
+
+```text
+{{{text}}}
+```
+{{/each}}
