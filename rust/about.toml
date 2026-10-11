@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+
+# cargo-about configuration: what ../THIRD-PARTY-LICENSES.md is generated
+# from. Regenerate, in this directory, with:
+#   cargo about generate --frozen --fail about.hbs -o ../THIRD-PARTY-LICENSES.md
+# --frozen keeps it offline: license texts come from the crates' own
+# sources, never from a network service.
+# CI fails when the file differs from what Cargo.lock gives.
+
+# The licenses deny.toml allows. A crate under another license fails here
+# as it fails there.
+accepted = ["Apache-2.0", "BSD-3-Clause", "MIT", "Unicode-3.0"]
+
+# What the extension links: not test, benchmark or build-time code.
+ignore-build-dependencies = true
+ignore-dev-dependencies = true
+
+# This project's own crate is covered by LICENSE and NOTICE.
+private = { ignore = true }
