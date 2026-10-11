@@ -6,6 +6,11 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- LangGraph adapter: `verified.integrations.langgraph.VerifiedCallbackHandler`,
+  installed with the `langgraph` extra.
+
 ## [0.1.0] - 2026-10-11
 
 First developer preview.

@@ -19,7 +19,7 @@ Working and tested:
 - **Work-unit identity** and nullifiers.
 - **Generic agent instrumentation**: sessions, turns, tools, traces; sync and
   async.
-- **One framework adapter**: OpenAI Agents SDK.
+- **Two framework adapters**: OpenAI Agents SDK and LangGraph.
 - **Conformance**: the published corpus for canonical encoding, both package
   versions, the contract language, work-unit identity and evidence statements.
 - **Packaging foundations**: maturin, one `abi3` wheel per platform, CI for
@@ -38,8 +38,9 @@ In rough order of leverage:
    it, so that `pip install verified` cannot install something else.
 2. **Move the report-to-JSON mapping upstream** (`rust/src/report.rs`), as
    the producer was.
-3. **Stable framework adapters**: LangGraph, then Google ADK, each with
-   integration tests against the real framework before the extra is listed.
+3. **More framework adapters**: Google ADK next, with integration tests
+   against the real framework before the extra is listed. For LangGraph:
+   streaming, subgraphs and resumed runs.
    An MCP server-side helper for tools that open work.
 4. **Richer evidence producers**: statement chains with a pluggable state
    store; a KMS signer example; batch signing.

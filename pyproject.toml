@@ -31,6 +31,7 @@ dependencies = []
 [project.optional-dependencies]
 # Only extras that are implemented and tested are listed.
 openai-agents = ["openai-agents>=0.23,<1"]
+langgraph = ["langgraph>=1.2,<2"]
 
 [project.urls]
 Repository = "https://github.com/dekrops/verified-python"
@@ -48,7 +49,7 @@ dev = [
 ]
 
 # Optional frameworks, for the adapter tests only.
-adapters = ["openai-agents>=0.23,<1"]
+adapters = ["openai-agents>=0.23,<1", "langgraph>=1.2,<2"]
 
 [tool.maturin]
 manifest-path = "rust/Cargo.toml"
@@ -66,6 +67,7 @@ asyncio_mode = "auto"
 markers = [
   "conformance: runs the published WVP conformance corpus",
   "openai_agents: needs the optional openai-agents extra",
+  "langgraph: needs the optional langgraph extra",
 ]
 
 [tool.ruff]

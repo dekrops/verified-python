@@ -138,8 +138,10 @@ OPEN ──attach(evidence)──▶ OPEN ──claim()──▶ CLAIMED ──i
 word, the decision is `UNDETERMINED`. The full flow, with a simulated ERP as a
 separate party, is [`examples/invoice-posting`](examples/invoice-posting/invoice_agent.py).
 
-An **OpenAI Agents SDK** adapter is included
-(`verified.integrations.openai_agents.VerifiedRunHooks`); see
+Two framework adapters are included, each tested against the real framework
+with a scripted model: the **OpenAI Agents SDK**
+(`verified.integrations.openai_agents.VerifiedRunHooks`) and **LangGraph**
+(`verified.integrations.langgraph.VerifiedCallbackHandler`). See
 [agent runtime integration](docs/architecture/agent-runtime-integration.md).
 
 ## 3. How do I produce evidence without misrepresenting its authority?
@@ -220,11 +222,11 @@ Working, with tests: offline verification of `wvp-0.1` and `wvp-0.2` packages;
 relying-party expectations and work records; trust registries; evidence
 statements, chains and admission; Work Contract Language 1; work-unit identity
 and nullifiers; issuing `wvp-0.2` packages; framework-independent
-instrumentation; one framework adapter.
+instrumentation; two framework adapters.
 
 Not here: a client for the hosted Verified platform (it has no stable
 service API to call yet); claim registration v1; statement chaining when
-*producing* evidence; LangGraph and Google ADK adapters. Details and reasons are in the
+*producing* evidence; a Google ADK adapter. Details and reasons are in the
 [roadmap](docs/roadmap.md) and the
 [compatibility assessment](docs/protocol-compatibility.md).
 
