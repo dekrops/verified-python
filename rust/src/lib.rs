@@ -39,7 +39,7 @@ create_exception!(
 
 /// The revision of `dekrops/verified-cli` the verification crates are built
 /// from. Kept beside the pin in `Cargo.toml`; a test compares the two.
-const UPSTREAM_REVISION: &str = "d270ae07150aeb1feb31896f234173f47ce36db0";
+const UPSTREAM_REVISION: &str = "0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a";
 
 /// The DER encoding of an Ed25519 `SubjectPublicKeyInfo` up to the key.
 const SPKI_PREFIX: [u8; 12] = [

@@ -4,20 +4,19 @@
 //! JSON.
 //!
 //! The JSON is the `verify` contract of `dekrops/verified-cli`
-//! (`docs/sdk/json-output.md`), member for member, plus one member, `stated`,
-//! holding what the package says about itself. Nothing here decides anything:
-//! every value is read off the upstream report.
+//! (`docs/sdk/json-output.md`), produced by the library itself
+//! (`Report::to_value`), plus two members read off the inspection: `stated`,
+//! holding what the package says about itself, and `verifiedIssuerKeys`.
 
 use pyo3::PyResult;
 use verified_canonical::{Limits, Sha256Digest, Value};
 use verified_protocol::ProtocolVersion;
 use verified_verifier::{
-    DecisionFinding, Evaluation, Expectations, Finding, Inspection, IssuerSignature, NotChecked,
-    Options, ProtocolSelection, Rejection, Report, Reproduced, Trust, inspect,
+    Expectations, Inspection, Options, ProtocolSelection, Rejection, Trust, inspect,
 };
 
 use crate::fail;
-use crate::json::{count, digest, list, object, optional, read, text, texts};
+use crate::json::{list, object, read, text, texts};
 
 /// What a relying party supplies besides the package.
 pub(crate) struct Request<'a> {
@@ -34,102 +33,6 @@ pub(crate) struct Request<'a> {
 pub(crate) fn trust(registry: &[u8]) -> PyResult<Trust> {
     let value = read(registry, "trust registry", "TRUST_REGISTRY")?;
     Trust::from_value(&value).map_err(|error| fail("TRUST_REGISTRY", error.to_string()))
-}
-
-fn reason(reason: NotChecked) -> &'static str {
-    match reason {
-        NotChecked::NoTrustRegistry => "no_trust_registry",
-        // An upstream reason this build does not know is still "not checked".
-        _ => "unknown",
-    }
-}
-
-fn finding(finding: Finding) -> Value {
-    match finding {
-        Finding::Established => object([("status", text("established"))]),
-        Finding::NotChecked(why) => object([
-            ("status", text("not_checked")),
-            ("reason", text(reason(why))),
-        ]),
-        _ => object([("status", text("not_checked")), ("reason", text("unknown"))]),
-    }
-}
-
-fn decision(finding: &DecisionFinding) -> Value {
-    let DecisionFinding::Reproduced(Reproduced {
-        decision,
-        evaluation,
-    }) = finding
-    else {
-        let why = match finding {
-            DecisionFinding::NotChecked(why) => reason(*why),
-            _ => "unknown",
-        };
-        // The decision a package carries is never echoed here.
-        return object([("status", text("not_checked")), ("reason", text(why))]);
-    };
-    let mut reproduced = verified_canonical::Object::new();
-    reproduced.insert("status", text("established"));
-    reproduced.insert("decision", text(decision.as_str()));
-    match evaluation {
-        Evaluation::OrderTransition { conditions } => {
-            reproduced.insert(
-                "conditions",
-                list(conditions.iter().map(|c| {
-                    object([
-                        ("id", text(c.id)),
-                        ("holds", Value::Bool(c.holds)),
-                        ("evidence", texts(&c.evidence)),
-                    ])
-                })),
-            );
-        }
-        Evaluation::WorkContract {
-            requirements,
-            ignored,
-            conflicts,
-        } => {
-            reproduced.insert(
-                "requirements",
-                list(
-                    requirements
-                        .iter()
-                        .map(|r| object([("id", text(&r.id)), ("value", text(r.value.as_str()))])),
-                ),
-            );
-            reproduced.insert("ignored", texts(ignored));
-            reproduced.insert(
-                "conflicts",
-                list(conflicts.iter().map(|c| {
-                    object([
-                        ("kind", text(&c.kind)),
-                        ("facts", texts(&c.facts)),
-                        ("resolvedTo", optional(c.resolved_to.as_deref())),
-                    ])
-                })),
-            );
-        }
-        _ => {}
-    }
-    Value::Object(reproduced)
-}
-
-fn issuer(issuer: IssuerSignature) -> Value {
-    match issuer {
-        IssuerSignature::Established { count: n } => {
-            object([("status", text("established")), ("count", count(n))])
-        }
-        IssuerSignature::Absent => object([("status", text("absent"))]),
-        IssuerSignature::NotChecked {
-            carried,
-            reason: why,
-        } => object([
-            ("status", text("not_checked")),
-            ("reason", text(reason(why))),
-            ("carried", count(carried)),
-        ]),
-        _ => object([("status", text("not_checked")), ("reason", text("unknown"))]),
-    }
 }
 
 fn stated(inspection: &Inspection) -> Value {
@@ -169,73 +72,13 @@ fn stated(inspection: &Inspection) -> Value {
     ])
 }
 
-/// The report of a package that was not refused.
+/// The report of a package that was not refused: the upstream report as the
+/// library states it, and what the package says about itself.
 pub(crate) fn reported(inspection: &Inspection) -> Value {
-    let report: &Report = &inspection.report;
-    let complete = report.is_complete();
-    let met = &report.expectations_met;
-    let mut result = verified_canonical::Object::new();
-    result.insert(
-        "outcome",
-        text(if complete { "complete" } else { "incomplete" }),
-    );
-    result.insert("protocol", text(report.protocol.identifier()));
-    result.insert("protocolStatus", text("draft"));
-    result.insert("packageId", text(&report.package_id.to_string()));
-    result.insert("tenant", text(&report.tenant));
-    result.insert("claim", text(&report.claim));
-    result.insert("statements", count(report.statements));
-    result.insert(
-        "components",
-        list(report.components.iter().map(|c| {
-            object([
-                ("path", text(c.path.as_str())),
-                ("digest", digest(&c.digest)),
-            ])
-        })),
-    );
-    result.insert(
-        "properties",
-        object([
-            ("packageIntegrity", finding(report.integrity)),
-            ("evidenceSignatures", finding(report.evidence_signatures)),
-            ("signerAuthority", finding(report.signer_authority)),
-            ("decisionReproduced", decision(&report.decision)),
-            ("issuerSignature", issuer(report.issuer_signature)),
-            (
-                "sourceTruthfulness",
-                object([
-                    ("status", text("not_established")),
-                    ("reason", text("no_check_can_establish_it")),
-                ]),
-            ),
-        ]),
-    );
-    result.insert(
-        "expectationsMet",
-        object([
-            ("tenant", optional(met.tenant.as_deref())),
-            (
-                "contract",
-                met.contract.as_ref().map_or(Value::Null, digest),
-            ),
-            ("claim", optional(met.claim.as_deref())),
-        ]),
-    );
-    if let Some(contract) = &report.contract {
-        result.insert(
-            "contract",
-            object([
-                ("id", text(&contract.id)),
-                ("version", text(&contract.version)),
-                ("digest", digest(&contract.digest)),
-            ]),
-        );
-    }
-    if let Some(record) = &report.work_record {
-        result.insert("workRecord", record.clone());
-        result.insert("recordMatched", Value::Bool(report.record_matched));
-    }
+    let mut result = match inspection.report.to_value() {
+        Value::Object(members) => members,
+        other => return other,
+    };
     result.insert(
         "verifiedIssuerKeys",
         inspection.verified_issuer_keys().map_or(Value::Null, texts),

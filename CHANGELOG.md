@@ -11,6 +11,15 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - LangGraph adapter: `verified.integrations.langgraph.VerifiedCallbackHandler`,
   installed with the `langgraph` extra.
 
+### Changed
+
+- The native extension is built on `dekrops/verified-cli` `v0.1.1`. The
+  report `verify` returns is now produced by the upstream library
+  (`Report::to_value`) instead of a copy of that mapping in this repository;
+  its members are unchanged.
+- A chain anchor is read by upstream's `Anchor::from_value`, which accepts
+  only the form the conformance corpus writes.
+
 ## [0.1.0] - 2026-10-11
 
 First developer preview.
