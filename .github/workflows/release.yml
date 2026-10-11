@@ -75,7 +75,7 @@ jobs:
           pattern: dist-*
           merge-multiple: true
           path: dist
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uvx twine check --strict dist/*
 
   publish:
