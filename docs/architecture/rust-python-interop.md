@@ -16,7 +16,7 @@ protocol value is constructed in Python.
 | `work_unit` | `verified_work_unit::{Scope, Identity, SecretKey}` |
 | `statement_signing_input`, `payload_digest` | `verified_protocol::STATEMENT_DOMAIN`, `Value::digest` |
 | `check_statement`, `verify_chain`, `admit` | `verified_verifier::evidence::{authenticate, verify_chain, admit}` |
-| `assemble_package`, `decision_signing_input`, `attach_issuer_signature` | see "The producer" |
+| `assemble_package`, `decision_signing_input`, `attach_issuer_signature` | `verified_verifier::issue::{issue, decision_signing_input, countersign}` |
 | `ed25519_public_key`, `ed25519_sign` | `ed25519-dalek`, the library the verifier uses |
 | `build_info` | constants of the crates |
 
@@ -27,7 +27,7 @@ JSON text is the interchange format on purpose:
   Python and the verifier. A Python `float` is refused before it crosses.
 - The surface is language-neutral. The same facade can sit behind a Node or
   WASM binding without redesign.
-- It is easy to audit: `rust/src` is about 1,300 lines, most of it mapping
+- It is easy to audit: `rust/src` is about 1,100 lines, most of it mapping
   upstream types to JSON members.
 
 `verify` returns the member names documented in upstream's
@@ -46,48 +46,37 @@ encoding and digests; signing domains and signing input; trust registry
 parsing and key decoding; all thirteen package checks; statement
 authentication, chains and admission; the contract language's reader and
 evaluator; work-unit identity, nullifier and key commitment; work record
-computation and comparison.
+computation and comparison; issuing `wvp-0.2` packages and countersigning
+their decisions.
 
 Not written in Python, deliberately: any of the above. Python formats
 instants (a string format the verifier then validates), converts whole
 numbers to the text the contract language uses, and reads display fields out
 of an already-validated contract. Nothing else.
 
-## The producer
+## Issuing
 
-Upstream verifies packages and does not build them. To let a Python developer
-go from an agent run to a package, something has to assemble one. That code is
-`rust/src/issue.rs`, and it is the one place this repository writes protocol
-layout itself. The decision deserves to be stated exactly.
+Packages are issued by `verified_verifier::issue`, the library that verifies
+them. It evaluates the contract with the function the verifier uses, writes
+the decision with the function the verifier compares against, and returns a
+package only after verifying it under the issuer's registry. `rust/src/issue.rs`
+maps the SDK's JSON parts onto its `Draft` and maps its errors back; it
+decides nothing about a package's layout.
 
-What it uses from upstream: `Contract::read` and `Contract::evaluate` produce
-the outcome; `SignedStatement::from_value` reads statements and computes their
-digests; `Value::digest` computes every commitment; `ProtocolVersion` supplies
-the evaluator name and the decision signing domain.
-
-What it writes itself, from the specification: the environment of WVP v0.2 §2
-(facts from record bodies with the *statement's* source, the latest
-completeness per kind and source), the decision object of §4, the six
-components and the container.
-
-Why that is acceptable: every assembled package is handed to
-`verified_verifier` under the caller's registry before it is returned. If the
-verifier does not reproduce the decision completely, `assemble` fails. A
-mistake in the producer can therefore make issuing fail; it cannot produce a
-package that a conforming verifier accepts with a different decision. The
-packages in `examples/standalone-verification` were also checked with the
-upstream binary.
-
-What would be better: the producer living upstream (proposal 1 in
-[ecosystem boundaries](ecosystem-boundaries.md)), at which point
-`issue.rs` shrinks to one call.
+That module began in this repository. The first version of this SDK laid
+packages out itself, because upstream had no producer, and checked each one
+with the upstream verifier. The code was then contributed upstream, where it
+could share the verifier's internals instead of repeating them, and was
+deleted here ([decision 0005](../decisions/0005-producer-with-self-check.md)).
 
 ## Pinning and upgrades
 
-The five crates are git dependencies pinned to one commit of upstream `main`
-(`rust/Cargo.toml`), locked in `rust/Cargo.lock`, built with `--locked`.
-Upstream declares its Rust API unstable and asks consumers to pin a commit of
-`main`; this is that.
+The five crates are git dependencies pinned to the commit of an upstream tag
+(`rust/Cargo.toml`, currently `v0.1.0`), locked in `rust/Cargo.lock`, built
+with `--locked`. Upstream's library API follows semantic versioning from its
+first tag, and asks consumers that exchange packages to pin the same tag.
+Agent Billing Center and Agent Compliance Center record theirs in
+`conformance/upstream.json`; this SDK compiles its pin into the extension.
 
 To move the pin: change the five `rev` values and `UPSTREAM_REVISION` in
 `rust/src/lib.rs`, run the full suite with the corpus required, update the

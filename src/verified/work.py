@@ -39,7 +39,7 @@ from verified import _bridge
 from verified._time import Clock, instant, now
 from verified.canonical import Digest
 from verified.contracts import WorkContract
-from verified.errors import AssemblyError, ContractError, LifecycleError, SigningAuthorityError
+from verified.errors import LifecycleError, SigningAuthorityError
 from verified.evidence import SignedEvidence
 from verified.records import WorkPackage
 from verified.signing import DECISION_SOURCE, Signer, SigningAuthority, encode_signature
@@ -408,12 +408,7 @@ class Work:
                 },
             }
             registry = trust.to_json()
-            try:
-                text, report = _bridge.call("assemble_package", _bridge.dumps(parts), registry)
-            except ContractError as error:
-                # The contract itself was checked when it was loaded, so this is
-                # the claim or the evidence not fitting it.
-                raise AssemblyError(error.code, str(error).partition(": ")[2]) from error
+            text, report = _bridge.call("assemble_package", _bridge.dumps(parts), registry)
             if issuer is not None:
                 issuer.authority.require(source=DECISION_SOURCE, tenant=self._tenant)
                 message: bytes = _bridge.call("decision_signing_input", text)

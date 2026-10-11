@@ -36,8 +36,8 @@ In rough order of leverage:
 1. **Publish wheels.** Register the project, resolve the `verified` import
    name question (an unrelated distribution owns `verified` on PyPI), and
    release through trusted publishing.
-2. **Move the producer upstream** and delete `rust/src/issue.rs`'s layout
-   code. Same for the report-to-JSON mapping.
+2. **Move the report-to-JSON mapping upstream** (`rust/src/report.rs`), as
+   the producer was.
 3. **Stable framework adapters**: LangGraph, then Google ADK, each with
    integration tests against the real framework before the extra is listed.
    An MCP server-side helper for tools that open work.

@@ -1,6 +1,9 @@
 # 0005. A producer in the binding crate, self-checked
 
-Status: accepted, intended to be temporary.
+Status: superseded. The producer was contributed to `dekrops/verified-cli`
+as `verified_verifier::issue` (upstream ADR 0013, tag `v0.1.0`) and deleted
+here. `rust/src/issue.rs` now only calls it. Kept as the record of why the
+SDK carried one for its first commit.
 
 ## Context
 
