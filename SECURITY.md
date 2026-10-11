@@ -9,7 +9,7 @@ the sole control for a consequential decision.
 
 ## Supported versions
 
-Only the latest commit on `main`. There are no releases yet.
+Only the latest release.
 
 ## Reporting a vulnerability
 

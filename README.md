@@ -11,7 +11,7 @@ by the same Rust crates as the [`verified` CLI](https://github.com/dekrops/verif
 bound natively; the Python layer adds an API, not a second implementation.
 
 **Status: developer preview (0.1.0).** WVP is a draft in every version. This
-SDK has not been security-audited, is not on PyPI yet, and its API will change.
+SDK has not been security-audited, and its API will change.
 Read [what is and is not supported](docs/protocol-compatibility.md) before
 relying on it.
 
@@ -21,8 +21,13 @@ Any agent. Any runtime. Independently verifiable work.
 
 ## Install
 
-Not published yet. From a checkout, with a Rust toolchain (1.99+) and
-[uv](https://docs.astral.sh/uv/):
+```sh
+pip install verified-python
+```
+
+Wheels are published for Linux, macOS and Windows; the import name is
+`verified`. To work on the SDK, from a checkout with a Rust toolchain (1.99+)
+and [uv](https://docs.astral.sh/uv/):
 
 ```sh
 git clone --recurse-submodules https://github.com/dekrops/verified-python
@@ -218,9 +223,8 @@ and nullifiers; issuing `wvp-0.2` packages; framework-independent
 instrumentation; one framework adapter.
 
 Not here: a client for the hosted Verified platform (it has no stable
-service API to call yet); claim
-registration v1; statement chaining when *producing* evidence; LangGraph and
-Google ADK adapters; published wheels. Details and reasons are in the
+service API to call yet); claim registration v1; statement chaining when
+*producing* evidence; LangGraph and Google ADK adapters. Details and reasons are in the
 [roadmap](docs/roadmap.md) and the
 [compatibility assessment](docs/protocol-compatibility.md).
 
