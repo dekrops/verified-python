@@ -9,7 +9,7 @@ found when it looked at the rest of the ecosystem.
 | | |
 | --- | --- |
 | SDK | `verified-python` 0.1.0 |
-| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.0`, commit `d270ae07150aeb1feb31896f234173f47ce36db0`: `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
+| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.1`, commit `0d18dfb11b1849e89ecfb05aa33cddf2fd2d172a`: `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
 | Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `c7c9de2a7e8ad67e7dcee46d5c5f7fc2edccb797`, as the submodule `conformance/wvp` |
 | Python | 3.11 to 3.14 (one `abi3` extension) |
 
@@ -113,11 +113,12 @@ versions and passes the corpus. When this SDK was first written the library
 had no producer, no tag and an API declared unstable; its own ADR 0007
 anticipated a first SDK wrapping the command's JSON output and left "PyO3 or
 pure Python" open. Since then it has gained `verified_verifier::issue` (its
-ADR 0013), contributed from this SDK's first producer, and a first tag,
-`v0.1.0`, with a compatibility policy for the library crates.
-**Consequence:** this SDK binds the crates directly at that tag, mirrors the
-documented `verify --json` shape so there is one contract, and issues
-packages through the upstream producer.
+ADR 0013), contributed from this SDK's first producer; tags, from
+`v0.1.0`, with a compatibility policy for the library crates; and, in
+`v0.1.1`, the `verify --json` shape as a library function
+(`Report::to_value`). **Consequence:** this SDK binds the crates directly at
+a tag, returns the report as the library states it so there is one contract,
+and issues packages through the upstream producer.
 
 ### `dekrops/agent-billing-center`
 
@@ -165,10 +166,10 @@ wherever the difference could mislead. The site does not mention an SDK.
 ### Three things the assessment found that matter beyond this SDK
 
 1. **Three consumers, three pins.** Billing Center, Compliance Center and this
-   SDK pinned three different revisions of the same crates. Upstream now has
-   a tag, `v0.1.0`, and a stated convention that consumers exchanging
-   packages pin the same one; this SDK pins it, and pull requests move the
-   two applications to it.
+   SDK pinned three different revisions of the same crates. Upstream now
+   tags its releases and states a convention that consumers exchanging
+   packages pin the same tag. All three moved to `v0.1.0`; this SDK is on
+   `v0.1.1`, a patch release whose library API only grew.
 2. **Two producers.** Compliance Center and this SDK each built packages by
    hand. The producer is now upstream and this SDK uses it. Compliance
    Center can delete its own.

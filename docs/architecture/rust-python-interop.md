@@ -27,8 +27,8 @@ JSON text is the interchange format on purpose:
   Python and the verifier. A Python `float` is refused before it crosses.
 - The surface is language-neutral. The same facade can sit behind a Node or
   WASM binding without redesign.
-- It is easy to audit: `rust/src` is about 1,100 lines, most of it mapping
-  upstream types to JSON members.
+- It is easy to audit: `rust/src` is under 900 lines, most of it reading
+  arguments and naming errors.
 
 `verify` returns the member names documented in upstream's
 `docs/sdk/json-output.md` for `verified verify --json`, plus `stated` (what
@@ -72,7 +72,7 @@ deleted here ([decision 0005](../decisions/0005-producer-with-self-check.md)).
 ## Pinning and upgrades
 
 The five crates are git dependencies pinned to the commit of an upstream tag
-(`rust/Cargo.toml`, currently `v0.1.0`), locked in `rust/Cargo.lock`, built
+(`rust/Cargo.toml`, currently `v0.1.1`), locked in `rust/Cargo.lock`, built
 with `--locked`. Upstream's library API follows semantic versioning from its
 first tag, and asks consumers that exchange packages to pin the same tag.
 Agent Billing Center and Agent Compliance Center record theirs in

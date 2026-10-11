@@ -15,10 +15,6 @@ pub(crate) fn text(value: &str) -> Value {
     Value::String(value.to_owned())
 }
 
-pub(crate) fn count(value: usize) -> Value {
-    Value::Integer(Integer::from(i64::try_from(value).unwrap_or(i64::MAX)))
-}
-
 pub(crate) fn number(value: i64) -> Value {
     Value::Integer(Integer::from(value))
 }
@@ -41,11 +37,6 @@ pub(crate) fn texts<S: AsRef<str>>(items: &[S]) -> Value {
 
 pub(crate) fn optional(value: Option<&str>) -> Value {
     value.map_or(Value::Null, text)
-}
-
-/// `{ "value": … }`, the wire form of identifiers and times.
-pub(crate) fn wrapped(value: &str) -> Value {
-    object([("value", text(value))])
 }
 
 /// `{ "algorithm": "sha-256", "hex": … }`, the wire form of a digest.

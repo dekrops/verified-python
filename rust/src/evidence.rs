@@ -11,7 +11,7 @@ use verified_verifier::Trust;
 use verified_verifier::evidence::{Anchor, EvidenceRefusal, admit, authenticate, verify_chain};
 
 use crate::fail;
-use crate::json::{digest, member, member_text, number, object, text, wrapped};
+use crate::json::{digest, member, number, object, text};
 
 fn refused(refusal: &EvidenceRefusal) -> Value {
     object([
@@ -77,51 +77,15 @@ pub(crate) fn statement(signed: &[u8], trust: Option<&Trust>) -> Value {
     }
 }
 
-fn anchor(value: &Value) -> PyResult<Anchor> {
-    let bad = || {
-        fail(
-            "USAGE",
-            "an anchor is { tenant, issuer, stream, sequence, digest }",
-        )
-    };
-    let unwrap = |name: &str| {
-        member_text(value, &[name, "value"])
-            .or_else(|| member_text(value, &[name]))
-            .map(str::to_owned)
-            .ok_or_else(bad)
-    };
-    Ok(Anchor {
-        tenant: unwrap("tenant")?,
-        issuer: unwrap("issuer")?,
-        stream: member_text(value, &["stream"]).ok_or_else(bad)?.to_owned(),
-        sequence: member(value, "sequence")
-            .and_then(Value::as_integer)
-            .and_then(verified_canonical::Integer::to_i64)
-            .ok_or_else(bad)?,
-        digest: member_text(value, &["digest", "hex"])
-            .and_then(|hex| hex.parse().ok())
-            .ok_or_else(bad)?,
-    })
-}
-
-fn anchor_json(anchor: &Anchor) -> Value {
-    object([
-        ("tenant", wrapped(&anchor.tenant)),
-        ("issuer", wrapped(&anchor.issuer)),
-        ("stream", text(&anchor.stream)),
-        ("sequence", number(anchor.sequence)),
-        ("digest", digest(&anchor.digest)),
-    ])
-}
-
 pub(crate) fn chain(statements: &Value, trust: &Trust, from: Option<&Value>) -> PyResult<Value> {
     let statements = statements
         .as_array()
         .ok_or_else(|| fail("USAGE", "statements is not a list"))?;
     let from = from
         .filter(|value| **value != Value::Null)
-        .map(anchor)
-        .transpose()?;
+        .map(Anchor::from_value)
+        .transpose()
+        .map_err(|error| fail("USAGE", error.to_string()))?;
     let mut authenticated = Vec::with_capacity(statements.len());
     for signed in statements {
         match authenticate(signed, trust) {
@@ -135,7 +99,7 @@ pub(crate) fn chain(statements: &Value, trust: &Trust, from: Option<&Value>) -> 
             ("fromGenesis", Value::Bool(segment.from_genesis)),
             ("first", number(segment.first)),
             ("last", number(segment.head.sequence)),
-            ("head", anchor_json(&segment.head)),
+            ("head", segment.head.to_value()),
         ]),
         Err(refusal) => refused(&refusal),
     })

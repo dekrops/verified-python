@@ -36,24 +36,22 @@ In rough order of leverage:
 1. **Settle the bare name.** Wheels are published as `verified-python`. An
    unrelated placeholder owns `verified` on PyPI; a PEP 541 request asks for
    it, so that `pip install verified` cannot install something else.
-2. **Move the report-to-JSON mapping upstream** (`rust/src/report.rs`), as
-   the producer was.
-3. **More framework adapters**: Google ADK next, with integration tests
+2. **More framework adapters**: Google ADK next, with integration tests
    against the real framework before the extra is listed. For LangGraph:
    streaming, subgraphs and resumed runs.
    An MCP server-side helper for tools that open work.
-4. **Richer evidence producers**: statement chains with a pluggable state
+3. **Richer evidence producers**: statement chains with a pluggable state
    store; a KMS signer example; batch signing.
-5. **Claim registration v1**: bind the existing Rust library; run its 123
+4. **Claim registration v1**: bind the existing Rust library; run its 123
    vectors.
-6. **Platform service integration**, once the platform has a versioned API
+5. **Platform service integration**, once the platform has a versioned API
    and service credentials: submit packages, fetch records. Optional module.
-7. **Attestation ergonomics**: detached application signatures under
+6. **Attestation ergonomics**: detached application signatures under
    caller-owned domains and a generic multi-claim index, if the protocol
    adopts a multi-claim object; otherwise guidance for applications.
-8. **Release the GIL** during verification, and an `async` convenience, if
+7. **Release the GIL** during verification, and an `async` convenience, if
    measurements on large packages justify it.
-9. **Documentation site** (mkdocs-material) with API reference generated from
+8. **Documentation site** (mkdocs-material) with API reference generated from
    the docstrings.
 
 ## Later

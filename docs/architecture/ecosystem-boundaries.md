@@ -61,20 +61,20 @@ instrumentation.
 
 ## Proposed upstream changes
 
-Proposals 1 and 3 have been carried out upstream. The others are open, and
+Proposals 1, 2 and 3 have been carried out upstream. The others are open, and
 nothing else was changed in another repository.
 
 1. **Done: a producer in `verified-cli`.** `verified_verifier::issue`
    (upstream ADR 0013) evaluates and lays out `wvp-0.2` packages with the
    verifier's own code. This SDK uses it. Compliance Center (`acc-wvp`) can
    now delete its producer.
-2. **A report-to-JSON function in a library crate.** The `verify --json`
-   shape is documented as the contract for SDKs but is implemented inside the
-   binary. This SDK re-implements the mapping (`rust/src/report.rs`).
-   Exporting it (`verified_verifier::report_json`, or a small `verified-json`
-   crate) gives every binding the same output for free.
+2. **Done: a report-to-JSON function in a library crate.** The
+   `verify --json` shape is the contract for SDKs, and was implemented only
+   inside the binary. From `v0.1.1` the library states it
+   (`Report::to_value`), and reads and writes chain anchors
+   (`Anchor::from_value`, `Anchor::to_value`). This SDK's copies are deleted.
 3. **Done: a tagged release and a shared pin.** Upstream is tagged
-   `v0.1.0`, with semantic versioning for the library crates and a stated
+   from `v0.1.0`, with semantic versioning for the library crates and a stated
    convention that consumers exchanging packages pin the same tag.
 4. **Typed accessors on `Contract`**: declared inputs, kinds, accepted
    sources, requirement identifiers, policy parameters. Consumers currently
