@@ -16,16 +16,17 @@ name = "_native"
 crate-type = ["cdylib"]
 
 # The verification crates are pinned to the commit of a tag of
-# dekrops/verified-cli (v0.1.4). They are not on
-# crates.io. Change all six together, with the result tables in
+# dekrops/verified-cli (v0.1.5). They are not on
+# crates.io. Change all seven together, with the result tables in
 # docs/protocol-compatibility.md, in one pull request.
 [dependencies]
-verified-canonical = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
-verified-contract = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
-verified-history = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
-verified-protocol = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
-verified-verifier = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
-verified-work-unit = { git = "https://github.com/dekrops/verified-cli", rev = "4d41004eed165a2df65523f0d9753cbf050f306e", version = "0.1.4" }
+verified-canonical = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-contract = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-derivation = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-history = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-protocol = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-verifier = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
+verified-work-unit = { git = "https://github.com/dekrops/verified-cli", rev = "d9e99f54803a1b74f0f0dd53bf1815d2238b8046", version = "0.1.5" }
 
 base64 = "0.23.1"
 ed25519-dalek = { version = "3.0.0", default-features = false }

@@ -16,6 +16,15 @@ The protocol is a draft and this SDK is a developer preview.
 from verified._bridge import native_available
 from verified.canonical import Digest, canonicalize
 from verified.contracts import WorkContract
+from verified.derivation import (
+    AuthorizationOutcome,
+    AuthorizationReplay,
+    BoundDerivation,
+    DerivationReplay,
+    ReplayOutcome,
+    RequirementBinding,
+    replay_derivation,
+)
 from verified.errors import (
     AssemblyError,
     ContractError,
@@ -89,6 +98,9 @@ __all__ = [
     "AgentIdentity",
     "AssemblyError",
     "Authentication",
+    "AuthorizationOutcome",
+    "AuthorizationReplay",
+    "BoundDerivation",
     "Claim",
     "Completeness",
     "Condition",
@@ -97,6 +109,7 @@ __all__ = [
     "ContractReference",
     "Decision",
     "DecisionIssuer",
+    "DerivationReplay",
     "Digest",
     "Ed25519Signer",
     "EventKind",
@@ -116,6 +129,8 @@ __all__ = [
     "Reference",
     "Refusal",
     "RelationRead",
+    "ReplayOutcome",
+    "RequirementBinding",
     "RequirementNotMet",
     "RequirementValue",
     "ResourceLimitError",
@@ -157,6 +172,7 @@ __all__ = [
     "content_digest",
     "native_available",
     "read_history",
+    "replay_derivation",
     "work_unit",
 ]
 

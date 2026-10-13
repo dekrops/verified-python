@@ -9,7 +9,7 @@
 
 # The licenses deny.toml allows. A crate under another license fails here
 # as it fails there.
-accepted = ["Apache-2.0", "BSD-3-Clause", "MIT", "Unicode-3.0"]
+accepted = ["Apache-2.0", "BSD-3-Clause", "MIT", "Unicode-3.0", "Zlib"]
 
 # What the extension links: not test, benchmark or build-time code.
 ignore-build-dependencies = true

@@ -9,7 +9,7 @@ found when it looked at the rest of the ecosystem.
 | | |
 | --- | --- |
 | SDK | `verified-python` 0.1.0 |
-| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.4`, commit `4d41004eed165a2df65523f0d9753cbf050f306e`: `verified-history`, `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
+| Verification crates | [`dekrops/verified-cli`](https://github.com/dekrops/verified-cli) `v0.1.5`, commit `d9e99f54803a1b74f0f0dd53bf1815d2238b8046`: `verified-derivation`, `verified-history`, `verified-canonical`, `verified-protocol`, `verified-contract`, `verified-verifier`, `verified-work-unit` |
 | Conformance corpus | [`dekrops/wvp`](https://github.com/dekrops/wvp) at `46ccd1d7c34d3a92e13a59f9235120f8d37395d7`, as the submodule `conformance/wvp` |
 | Python | 3.11 to 3.14 (one `abi3` extension) |
 
@@ -32,6 +32,12 @@ Also, outside packages: evidence statements (sign, read, authenticate),
 statement chains (verify), admission, Work Contract Language 1 (read, and
 evaluate through package assembly), work-unit identity v1 (identity,
 nullifier, key commitment).
+
+Outside the protocol, as an experiment: replaying a recomputed
+authorization (`verified.replay_derivation`). It is proposed in RFC 0005 of
+`dekrops/wvp`, a Draft that no specification defines; there is no conformance
+corpus for it, and it may change or be removed. Upstream's replayer decides
+everything; four of its example packages are replayed in this SDK's tests.
 
 And, as a draft: work relation v1, reading only (`verified.read_history`).
 Given relations and the records they name, it reports each relation as
@@ -178,7 +184,7 @@ wherever the difference could mislead. The site does not mention an SDK.
    SDK pinned three different revisions of the same crates. Upstream now
    tags its releases and states a convention that consumers exchanging
    packages pin the same tag. All three moved to `v0.1.0`; this SDK is on
-   `v0.1.4`, the fourth patch release, whose library API only grew.
+   `v0.1.5`, the fifth patch release, whose library API only grew.
 2. **Two producers.** Compliance Center and this SDK each built packages by
    hand. The producer is now upstream and this SDK uses it. Compliance
    Center can delete its own.

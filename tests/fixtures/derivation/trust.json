@@ -1,0 +1,118 @@
+{
+  "keys" : [
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000904"
+      },
+      "keyId" : "test-authorization-recomputation-1",
+      "publicKey" : "MCowBQYDK2VwAyEAY1VpHBeKj/kQB6dHivuVXvc1LGPnslcDmEz3iybiGlY=",
+      "revokedAt" : null,
+      "sources" : [
+        "authorization-recomputation"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    },
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000901"
+      },
+      "keyId" : "test-compliance-1",
+      "publicKey" : "MCowBQYDK2VwAyEAIVL40Zt5HSRFMkLhXy6rbLfP+ntqXtMAl5YOBpiB2xI=",
+      "revokedAt" : null,
+      "sources" : [
+        "compliance"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    },
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000900"
+      },
+      "keyId" : "test-erp-1",
+      "publicKey" : "MCowBQYDK2VwAyEA25lf4lFp0UHKubu6krqgH58uHs599MsqwFGQ83/MH50=",
+      "revokedAt" : null,
+      "sources" : [
+        "erp"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    },
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000902"
+      },
+      "keyId" : "test-identity-directory-1",
+      "publicKey" : "MCowBQYDK2VwAyEAIvwpd5Lwtv/Av8/bftsMCqFOAlo2XsDjQuhuOCnLdLY=",
+      "revokedAt" : null,
+      "sources" : [
+        "identity-directory"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    },
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000905"
+      },
+      "keyId" : "test-erp-archive-1",
+      "publicKey" : "MCowBQYDK2VwAyEA7pOk9m+NFrgZu5vrn/zN/NwUEuh/7moyTCqZoeDmcUg=",
+      "revokedAt" : null,
+      "sources" : [
+        "erp-archive"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    },
+    {
+      "algorithm" : "Ed25519",
+      "issuer" : {
+        "value" : "00000000-0000-4000-8000-000000000903"
+      },
+      "keyId" : "test-policy-store-1",
+      "publicKey" : "MCowBQYDK2VwAyEA11l5O7wTooGagnx2rbb7qKSa7gB/SfLQmS2ZuCWtLEg=",
+      "revokedAt" : null,
+      "sources" : [
+        "policy-store"
+      ],
+      "tenant" : {
+        "value" : "tenant-a"
+      },
+      "validFrom" : {
+        "value" : "2025-01-01T00:00:00Z"
+      },
+      "validUntil" : null
+    }
+  ]
+}
