@@ -1,0 +1,1679 @@
+{
+  "description" : "The contract has a second requirement over the derived records. Both depend on the one derivation.",
+  "expect" : {
+    "authorization" : [
+      {
+        "correlation" : "WF-7",
+        "engineDecision" : "Allow",
+        "outcome" : "ALLOW",
+        "reasons" : [
+        ]
+      }
+    ],
+    "bindings" : [
+      "APPROVAL_AUTHORIZED",
+      "DECISION_NAMES_THE_ORDER"
+    ],
+    "commitment" : {
+      "algorithm" : "sha-256",
+      "hex" : "34ea60f4c356959077e189aa5e586ac51cdd150d1219aafea612fa734dc7f9d0"
+    },
+    "decision" : "SUPPORTED",
+    "replay" : "REPRODUCED"
+  },
+  "package" : {
+    "contract" : {
+      "evaluation" : {
+        "semantics" : "kleene-1"
+      },
+      "evidence" : {
+        "conflicts" : "unknown",
+        "sources" : {
+          "approval" : [
+            "erp"
+          ],
+          "authorizationDecision" : [
+            "authorization-recomputation"
+          ],
+          "check" : [
+            "compliance"
+          ],
+          "confirmation" : [
+            "erp"
+          ],
+          "purchaseOrder" : [
+            "erp"
+          ]
+        }
+      },
+      "identity" : {
+        "id" : "purchase-order-authorization-recomputed",
+        "version" : "1.0.0"
+      },
+      "inputs" : {
+        "order" : {
+          "type" : "text"
+        }
+      },
+      "kinds" : {
+        "approval" : {
+          "fields" : {
+            "approver" : {
+              "type" : "text"
+            },
+            "at" : {
+              "type" : "time"
+            },
+            "id" : {
+              "type" : "text"
+            },
+            "order" : {
+              "type" : "text"
+            }
+          },
+          "key" : [
+            "id"
+          ]
+        },
+        "authorizationDecision" : {
+          "fields" : {
+            "action" : {
+              "type" : "text"
+            },
+            "at" : {
+              "type" : "time"
+            },
+            "engine" : {
+              "type" : "text"
+            },
+            "engineDecision" : {
+              "type" : "text"
+            },
+            "errors" : {
+              "type" : "int"
+            },
+            "id" : {
+              "type" : "text"
+            },
+            "languageVersion" : {
+              "type" : "text"
+            },
+            "permitted" : {
+              "optional" : true,
+              "type" : "bool"
+            },
+            "policySet" : {
+              "type" : "text"
+            },
+            "principal" : {
+              "type" : "text"
+            },
+            "request" : {
+              "type" : "text"
+            },
+            "resource" : {
+              "type" : "text"
+            },
+            "schema" : {
+              "type" : "text"
+            }
+          },
+          "key" : [
+            "id"
+          ]
+        },
+        "check" : {
+          "fields" : {
+            "at" : {
+              "type" : "time"
+            },
+            "id" : {
+              "type" : "text"
+            },
+            "order" : {
+              "type" : "text"
+            }
+          },
+          "key" : [
+            "id"
+          ]
+        },
+        "confirmation" : {
+          "fields" : {
+            "order" : {
+              "type" : "text"
+            },
+            "state" : {
+              "type" : "text"
+            }
+          },
+          "key" : [
+            "order"
+          ]
+        },
+        "purchaseOrder" : {
+          "fields" : {
+            "amount" : {
+              "currency" : "EUR",
+              "scale" : 2,
+              "type" : "money"
+            },
+            "number" : {
+              "type" : "text"
+            }
+          },
+          "key" : [
+            "number"
+          ]
+        }
+      },
+      "language" : "work-contract-1",
+      "policy" : {
+        "approveAction" : {
+          "policy" : {
+            "id" : "po-authorization",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "text"
+          },
+          "value" : "Action::\"approve\""
+        },
+        "approvedState" : {
+          "policy" : {
+            "id" : "po-lifecycle",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "text"
+          },
+          "value" : "APPROVED"
+        },
+        "engineAllow" : {
+          "policy" : {
+            "id" : "po-authorization",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "text"
+          },
+          "value" : "Allow"
+        },
+        "noErrors" : {
+          "policy" : {
+            "id" : "po-authorization",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "int"
+          },
+          "value" : "0"
+        },
+        "policySet" : {
+          "policy" : {
+            "id" : "po-authorization",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "text"
+          },
+          "value" : "sha-256:21ce02e6fd5f281467b59f396c4804314d0b4a4e7466d8a757dfac741ca5892c"
+        },
+        "yes" : {
+          "policy" : {
+            "id" : "po-authorization",
+            "version" : "1"
+          },
+          "type" : {
+            "type" : "bool"
+          },
+          "value" : true
+        }
+      },
+      "requires" : [
+        {
+          "id" : "APPROVAL_AUTHORIZED",
+          "predicate" : {
+            "forall" : "a",
+            "holds" : {
+              "or" : [
+                {
+                  "cmp" : "ne",
+                  "left" : {
+                    "field" : "order",
+                    "var" : "a"
+                  },
+                  "right" : {
+                    "input" : "order"
+                  }
+                },
+                {
+                  "exists" : "d",
+                  "in" : "authorizationDecision",
+                  "where" : {
+                    "and" : [
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "request",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "field" : "id",
+                          "var" : "a"
+                        }
+                      },
+                      {
+                        "cmp" : "le",
+                        "left" : {
+                          "field" : "at",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "field" : "at",
+                          "var" : "a"
+                        }
+                      },
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "principal",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "field" : "approver",
+                          "var" : "a"
+                        }
+                      },
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "resource",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "input" : "order"
+                        }
+                      },
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "action",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "param" : "approveAction"
+                        }
+                      },
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "policySet",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "param" : "policySet"
+                        }
+                      },
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "permitted",
+                          "var" : "d"
+                        },
+                        "right" : {
+                          "param" : "yes"
+                        }
+                      },
+                      {
+                        "or" : [
+                          {
+                            "cmp" : "ne",
+                            "left" : {
+                              "field" : "permitted",
+                              "var" : "d"
+                            },
+                            "right" : {
+                              "param" : "yes"
+                            }
+                          },
+                          {
+                            "and" : [
+                              {
+                                "cmp" : "eq",
+                                "left" : {
+                                  "field" : "errors",
+                                  "var" : "d"
+                                },
+                                "right" : {
+                                  "param" : "noErrors"
+                                }
+                              },
+                              {
+                                "cmp" : "eq",
+                                "left" : {
+                                  "field" : "engineDecision",
+                                  "var" : "d"
+                                },
+                                "right" : {
+                                  "param" : "engineAllow"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "in" : "approval"
+          }
+        },
+        {
+          "id" : "APPROVAL_RECORDED",
+          "predicate" : {
+            "exists" : "a",
+            "in" : "approval",
+            "where" : {
+              "cmp" : "eq",
+              "left" : {
+                "field" : "order",
+                "var" : "a"
+              },
+              "right" : {
+                "input" : "order"
+              }
+            }
+          }
+        },
+        {
+          "id" : "CHECKED_BEFORE_APPROVAL",
+          "predicate" : {
+            "forall" : "a",
+            "holds" : {
+              "or" : [
+                {
+                  "cmp" : "ne",
+                  "left" : {
+                    "field" : "order",
+                    "var" : "a"
+                  },
+                  "right" : {
+                    "input" : "order"
+                  }
+                },
+                {
+                  "exists" : "c",
+                  "in" : "check",
+                  "where" : {
+                    "and" : [
+                      {
+                        "cmp" : "eq",
+                        "left" : {
+                          "field" : "order",
+                          "var" : "c"
+                        },
+                        "right" : {
+                          "input" : "order"
+                        }
+                      },
+                      {
+                        "cmp" : "lt",
+                        "left" : {
+                          "field" : "at",
+                          "var" : "c"
+                        },
+                        "right" : {
+                          "field" : "at",
+                          "var" : "a"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "in" : "approval"
+          }
+        },
+        {
+          "id" : "DECISION_NAMES_THE_ORDER",
+          "predicate" : {
+            "exists" : "d",
+            "in" : "authorizationDecision",
+            "where" : {
+              "cmp" : "eq",
+              "left" : {
+                "field" : "resource",
+                "var" : "d"
+              },
+              "right" : {
+                "input" : "order"
+              }
+            }
+          }
+        },
+        {
+          "id" : "FINAL_STATE_CONFIRMED",
+          "predicate" : {
+            "exists" : "s",
+            "in" : "confirmation",
+            "where" : {
+              "and" : [
+                {
+                  "cmp" : "eq",
+                  "left" : {
+                    "field" : "order",
+                    "var" : "s"
+                  },
+                  "right" : {
+                    "input" : "order"
+                  }
+                },
+                {
+                  "cmp" : "eq",
+                  "left" : {
+                    "field" : "state",
+                    "var" : "s"
+                  },
+                  "right" : {
+                    "param" : "approvedState"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id" : "ORDER_EXISTS",
+          "predicate" : {
+            "exists" : "po",
+            "in" : "purchaseOrder",
+            "where" : {
+              "cmp" : "eq",
+              "left" : {
+                "field" : "number",
+                "var" : "po"
+              },
+              "right" : {
+                "input" : "order"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "decisionKind" : "authorizationDecision",
+    "inputs" : {
+      "order" : "PO-123"
+    },
+    "package" : "verified-recomputation-package-experimental-2",
+    "presented" : {
+      "commitment" : {
+        "algorithm" : "sha-256",
+        "hex" : "34ea60f4c356959077e189aa5e586ac51cdd150d1219aafea612fa734dc7f9d0"
+      },
+      "core" : {
+        "bindings" : [
+          {
+            "derivations" : [
+              {
+                "commitment" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "f6731d6a6347590be0c93ddc1d31eb4c343e330d1f922329cfd83185f47af507"
+                },
+                "correlation" : "WF-7",
+                "record" : "d-f6731d6a6347590be0c93ddc1d31eb4c343e330d"
+              }
+            ],
+            "method" : {
+              "name" : "verified-cedar-recomputation",
+              "version" : "0.2.0"
+            },
+            "requirement" : "APPROVAL_AUTHORIZED"
+          },
+          {
+            "derivations" : [
+              {
+                "commitment" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "f6731d6a6347590be0c93ddc1d31eb4c343e330d1f922329cfd83185f47af507"
+                },
+                "correlation" : "WF-7",
+                "record" : "d-f6731d6a6347590be0c93ddc1d31eb4c343e330d"
+              }
+            ],
+            "method" : {
+              "name" : "verified-cedar-recomputation",
+              "version" : "0.2.0"
+            },
+            "requirement" : "DECISION_NAMES_THE_ORDER"
+          }
+        ],
+        "contract" : {
+          "digest" : {
+            "algorithm" : "sha-256",
+            "hex" : "dd7dac97f15d2d04e5f77ddca449f6fba24b192524ec4d4e30a43460bfb73a06"
+          },
+          "id" : "purchase-order-authorization-recomputed",
+          "language" : "work-contract-1",
+          "semantics" : "kleene-1",
+          "version" : "1.0.0"
+        },
+        "decisionKind" : "authorizationDecision",
+        "derivations" : [
+          {
+            "algorithm" : "sha-256",
+            "hex" : "f6731d6a6347590be0c93ddc1d31eb4c343e330d1f922329cfd83185f47af507"
+          }
+        ],
+        "derivedSource" : "authorization-recomputation",
+        "evidence" : {
+          "algorithm" : "sha-256",
+          "hex" : "1ee7a4bd0df5d6ddaf07c90d623ee2b4a6ccc078a6dbc2bf72315e753053356e"
+        },
+        "format" : "verified-derived-evaluation-experimental-2",
+        "inputs" : {
+          "algorithm" : "sha-256",
+          "hex" : "1e2823c2811a33aa5103e10cfa704625383d7ace18cee7fce9a5428bb9b30636"
+        },
+        "profile" : {
+          "algorithm" : "sha-256",
+          "hex" : "a777991b2daec23f671d53204197f40481b5e61df8f7ede0647e19e29082314f"
+        },
+        "result" : {
+          "conflicts" : [
+          ],
+          "decision" : "SUPPORTED",
+          "ignored" : [
+            "e-00000000-0000-4000-8000-000000000020",
+            "e-00000000-0000-4000-8000-000000000021",
+            "e-00000000-0000-4000-8000-000000000022",
+            "e-00000000-0000-4000-8000-000000000023",
+            "e-00000000-0000-4000-8000-000000000030"
+          ],
+          "requirements" : [
+            {
+              "id" : "APPROVAL_AUTHORIZED",
+              "value" : "TRUE"
+            },
+            {
+              "id" : "APPROVAL_RECORDED",
+              "value" : "TRUE"
+            },
+            {
+              "id" : "CHECKED_BEFORE_APPROVAL",
+              "value" : "TRUE"
+            },
+            {
+              "id" : "DECISION_NAMES_THE_ORDER",
+              "value" : "TRUE"
+            },
+            {
+              "id" : "FINAL_STATE_CONFIRMED",
+              "value" : "TRUE"
+            },
+            {
+              "id" : "ORDER_EXISTS",
+              "value" : "TRUE"
+            }
+          ]
+        }
+      },
+      "derivations" : [
+        {
+          "commitment" : {
+            "algorithm" : "sha-256",
+            "hex" : "f6731d6a6347590be0c93ddc1d31eb4c343e330d1f922329cfd83185f47af507"
+          },
+          "core" : {
+            "correlation" : "WF-7",
+            "dependencies" : [
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000002",
+                "role" : "event",
+                "source" : "erp",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "c95377ccd7c7474f226c4ed6badb99a753c83651516a4925effef7908f558c0a"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000020",
+                "role" : "entity",
+                "source" : "identity-directory",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "6fd4b863c41795a3182fb1af309cb5285167a2ccf45c918784fb36e49cd77576"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000021",
+                "role" : "entity",
+                "source" : "identity-directory",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "e4e2f7ceacbd29e13ffbf4fa6a8e84bdf8307c13db1cf1778f88a7c0d14bed63"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000022",
+                "role" : "entity",
+                "source" : "identity-directory",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "6bfd82f9b140f417081bdca4da52ce8a15a6f00b8625246b216b952ea451a83b"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000023",
+                "role" : "entity",
+                "source" : "erp",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "c829da212bbea94d8de08e4ca61c22f873bc393a1443aea39d98c16b10c9a275"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000024",
+                "role" : "completeness",
+                "source" : "identity-directory",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "5505548f8a0b01d4913425bc273bc0ed3e81068f347f176fbb3d0f8d7a4a265a"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000025",
+                "role" : "completeness",
+                "source" : "erp",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "c42329729337ce6edb177fd861ec51a4a0894ad131b1fea597f47ad34b919d45"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000030",
+                "role" : "policy-set",
+                "source" : "policy-store",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "08fa290c326d2c474b2acf70c9635f94d9373124d9ab9ef747bc945817eb782e"
+                }
+              },
+              {
+                "evidence" : "e-00000000-0000-4000-8000-000000000031",
+                "role" : "completeness",
+                "source" : "policy-store",
+                "statement" : {
+                  "algorithm" : "sha-256",
+                  "hex" : "90d6ba0d6eaec5539161f82da7257a445659ee9cae1ccd8fa5f51104defb4fc6"
+                }
+              }
+            ],
+            "determining" : [
+              "policy0"
+            ],
+            "format" : "verified-recomputed-authorization-experimental-1",
+            "inputs" : {
+              "applicability" : {
+                "from" : "1750000000",
+                "until" : null
+              },
+              "entities" : {
+                "algorithm" : "sha-256",
+                "hex" : "7a6e3e00b3acc5a0852c58b5ffe5be1b2f630e4ba6d50ad1e2affeef02275fad"
+              },
+              "policySet" : {
+                "algorithm" : "sha-256",
+                "hex" : "21ce02e6fd5f281467b59f396c4804314d0b4a4e7466d8a757dfac741ca5892c"
+              },
+              "schema" : {
+                "algorithm" : "sha-256",
+                "hex" : "700dac4de6caddf90a2a3c0410da3954345f75785a34101e5ef67f85afbb4c57"
+              }
+            },
+            "method" : {
+              "canonicalization" : "verified-json-v1",
+              "features" : "cedar-static-no-context-1",
+              "languageVersion" : "4.5",
+              "name" : "verified-cedar-recomputation",
+              "version" : "0.2.0"
+            },
+            "outcome" : "ALLOW",
+            "profile" : {
+              "algorithm" : "sha-256",
+              "hex" : "a777991b2daec23f671d53204197f40481b5e61df8f7ede0647e19e29082314f"
+            },
+            "reasons" : [
+            ],
+            "request" : {
+              "action" : "Action::\"approve\"",
+              "at" : "1766200000",
+              "context" : {
+                "algorithm" : "sha-256",
+                "hex" : "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "principal" : "User::\"m.okafor\"",
+              "resource" : "PurchaseOrder::\"PO-123\""
+            }
+          },
+          "diagnostics" : {
+            "details" : [
+            ],
+            "determining" : [
+              "policy0"
+            ],
+            "engine" : "cedar-java 4.10.0",
+            "engineDecision" : "Allow",
+            "errors" : [
+            ],
+            "interpretation" : {
+              "outcome" : "ALLOW",
+              "reasons" : [
+              ]
+            }
+          },
+          "diagnosticsCommitment" : {
+            "algorithm" : "sha-256",
+            "hex" : "a615bb42fc1ed0be3a7677219d47af504a3241b223d870e789d71f9463eb2d01"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "action" : "Action::\"approve\"",
+      "completeness" : {
+        "derived" : "every-accepted-event-source-and-every-event-decided",
+        "entities" : "every-accepted-source-as-of-the-event",
+        "policySets" : "source-of-the-policy-set-as-of-the-event"
+      },
+      "entities" : {
+        "principalType" : "User",
+        "resourceType" : "PurchaseOrder",
+        "sources" : [
+          "erp",
+          "identity-directory"
+        ]
+      },
+      "event" : {
+        "id" : "id",
+        "kind" : "approval",
+        "principal" : "approver",
+        "resource" : "order",
+        "sources" : [
+          "erp"
+        ],
+        "time" : "at"
+      },
+      "languageVersion" : "4.5",
+      "policySources" : [
+        "policy-store"
+      ]
+    },
+    "statements" : [
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "amount" : "1800000",
+              "number" : "PO-123"
+            },
+            "kind" : "purchaseOrder"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "GEHioac22NOdIwG0x18gMNx9iOx5Mc48VTFT+MvQ8iSCaI8lyHkA/2GJgNFwaBznZ/5a8Fa8O347xOoCnhN/BQ==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000001"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "307342cd8c6284d722f34906d4be47d38bb4ddc4cf3be0197ead5d38762a03a2"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-1",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-1",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "approver" : "m.okafor",
+              "at" : "1766200000",
+              "id" : "WF-7",
+              "order" : "PO-123"
+            },
+            "kind" : "approval"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "DvKveyiP7akxVtrUZYzyLOBPcdA0XpJh4Cf16S/8vZs4pZdpXHpDCqFGby50uGbBwToB0P7Xsbb2X6YB0jJaCw==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000002"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "b484f8ff7651ae46e017c959452ed40486ae8d931a4d7a46320f26b7afd61f5f"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-2",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-2",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "at" : "1766100000",
+              "id" : "CK-1",
+              "order" : "PO-123"
+            },
+            "kind" : "check"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "We9rAmYHFgAmbB/aB63TA6RK0DL9vtJTZ2Ym5/ygS8EzVFC+qPvrDdlksFN7+9YsrCPi6VG3mmChknM3vUwzCg==",
+            "keyId" : "test-compliance-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000003"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000901"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "c9bca73f3f6657eeddb9498e4572af43f14eb5ae32ae10953dd49512c75481e2"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-3",
+              "system" : "compliance"
+            },
+            "subject" : {
+              "key" : "observation-3",
+              "kind" : "record",
+              "system" : "compliance"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "order" : "PO-123",
+              "state" : "APPROVED"
+            },
+            "kind" : "confirmation"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "oazYPYibUXPZcl8RKh/NFRqIJLI8KZo1+aKkuzoEIcE6nrAHmrpuyK8dfu0O4WkVHC616Rh0hPpzu3yuFMcFCQ==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000005"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "56fc54e52a24543927d1abaa7f944e25826142a5f63858e2dd77c68bdfbed1da"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-5",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-5",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "purchaseOrder"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "pbXqCBJNETOTJO2tJAAwYhCH2v8L2of9e4vim784sUBw9N7zJgsy8oyjkITm0wzoNEiZZtl3Bfpvr4GZMOCeDg==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000010"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "ca8c21f2f891553dd7e5bfd72536fbe48f3e378e0bf65046277560947f2d9c4e"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-10",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-10",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "approval"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "3Ht5diD/d+bfnaVCl/BRzJD5uF3fuRQTyf9JDLRBuDKOsQBR/iwP94OU3zp6llunrI13uIjnMH+OZWlv2qJtDA==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000011"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "5a7861fee2f20b4dc69cf079e88bc5ae8e6e7cde4fc95e832b6aad877286a814"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-11",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-11",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "check"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "0S69he+5B1Xb4ykm0oB01Ox5fN+6ZFKKCWC8sshYEcwiJ9OJUOWEC3mfMFuwUy1ixKXd3pjy1CWz4BP8Zc3bCg==",
+            "keyId" : "test-compliance-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000012"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000901"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "952da65258bda89f0154b0ff8d7a413cd6802d3c3b8c10826946f57055140c9f"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-12",
+              "system" : "compliance"
+            },
+            "subject" : {
+              "key" : "observation-12",
+              "kind" : "record",
+              "system" : "compliance"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "confirmation"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "poGYTvj4CZUeAOAZXpI7l6FCgSELPbagPmd5p/N7yybWvhQiCSH8PguocSODs6H/d5ItOGmoyZZhHy9zxdL6BA==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000013"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "5c49bfef882e924fe344289b9b574585bc75fb89d16eb425a4c4945293890f80"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-13",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-13",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "attrs" : {
+                "department" : "procurement",
+                "limit" : 2500000
+              },
+              "parents" : [
+                {
+                  "id" : "approvers",
+                  "type" : "Group"
+                }
+              ],
+              "uid" : {
+                "id" : "m.okafor",
+                "type" : "User"
+              },
+              "validFrom" : "1750000000"
+            },
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "RUNWZhnNE5rMvYE4PGp6MvaoeWkieyABqBffdX8oL+Rum0+G4e5mkkRAf1gCDN33SZoNyrNBk1jJd101+IJDCA==",
+            "keyId" : "test-identity-directory-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000020"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000902"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "b569ffb7fb158bf50a323562d692c5dafbf734e008deb2991c191b6547003995"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-20",
+              "system" : "identity-directory"
+            },
+            "subject" : {
+              "key" : "observation-20",
+              "kind" : "record",
+              "system" : "identity-directory"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "attrs" : {
+                
+              },
+              "parents" : [
+              ],
+              "uid" : {
+                "id" : "approvers",
+                "type" : "Group"
+              },
+              "validFrom" : "1750000000"
+            },
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "8bOYomCZALJCuexfnENTcrcLhA6MnQmQoswbxwSTjqPgLOVob0pvJxDqN9WFJmef6PJfCXz/UDv5QVxjv+IjBA==",
+            "keyId" : "test-identity-directory-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000021"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000902"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "4927c6eaf7896a92871f1926ba82b2c74057ee4e35d8f23cdcf126c923eb8601"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-21",
+              "system" : "identity-directory"
+            },
+            "subject" : {
+              "key" : "observation-21",
+              "kind" : "record",
+              "system" : "identity-directory"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "attrs" : {
+                "department" : "engineering",
+                "limit" : 0
+              },
+              "parents" : [
+              ],
+              "uid" : {
+                "id" : "j.rivera",
+                "type" : "User"
+              },
+              "validFrom" : "1750000000"
+            },
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "Sz0UbM3bAD524gPGzh/26RO5/WdXEL1WBwDfKzqfglkY5np1/wcJ4sZfv3CoCS2dZKLrfWt591bVdhGtdSdyDg==",
+            "keyId" : "test-identity-directory-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000022"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000902"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "051d122ae26e23250fca62bb5bbf9e6f283c04a69c88ca7c6f8cfbb5c4f5aeb0"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-22",
+              "system" : "identity-directory"
+            },
+            "subject" : {
+              "key" : "observation-22",
+              "kind" : "record",
+              "system" : "identity-directory"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "attrs" : {
+                "amount" : 1800000,
+                "requester" : {
+                  "__entity" : {
+                    "id" : "j.rivera",
+                    "type" : "User"
+                  }
+                }
+              },
+              "parents" : [
+              ],
+              "uid" : {
+                "id" : "PO-123",
+                "type" : "PurchaseOrder"
+              },
+              "validFrom" : "1750000000"
+            },
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "GYcCHbEouxagCOyGmkiZPcZty30pSwSQCy1KbZ5b3jkEP1bulALVi1khAzPtfIRzr3CC9tB9/Pu7WwqKnWZLBw==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000023"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "43322d6b8af7215cf463729e2302698ba60fc4ac84198f18303664bc3c2a0695"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-23",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-23",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "S4TPmFELT3oCieSo22fBIqaTeEZSsmlGNncBQXVKLSI2i2986+OjrkYV788hbEC8/MAtjHRGh8WX86ES3RJNDw==",
+            "keyId" : "test-identity-directory-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000024"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000902"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "6129876fa895265f6aa3b91a571e0ffd2b4c84847bdb09458ecc697f2e6593ce"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-24",
+              "system" : "identity-directory"
+            },
+            "subject" : {
+              "key" : "observation-24",
+              "kind" : "record",
+              "system" : "identity-directory"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "cedarEntity"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "D9IAkzUfWpbNZKg4QUNhNMgrOa+u/EKrJyj/cl0KXGEyzBb7TikCVkhC1GTbNYX0HqjHcFeeQEcG8MXhKvWQDQ==",
+            "keyId" : "test-erp-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000025"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000900"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "6129876fa895265f6aa3b91a571e0ffd2b4c84847bdb09458ecc697f2e6593ce"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-25",
+              "system" : "erp"
+            },
+            "subject" : {
+              "key" : "observation-25",
+              "kind" : "record",
+              "system" : "erp"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "record" : {
+            "fields" : {
+              "policies" : "permit(principal in Group::\"approvers\", action == Action::\"approve\", resource)\nwhen { principal.limit >= resource.amount };\nforbid(principal, action == Action::\"approve\", resource)\nwhen { principal has department && principal.department == \"suspended\" };\nforbid(principal, action == Action::\"approve\", resource)\nwhen { resource.requester == principal };",
+              "schema" : "{\"\": {\n    \"entityTypes\": {\n      \"Group\": {},\n      \"User\": {\"memberOfTypes\": [\"Group\"], \"shape\": {\"type\": \"Record\", \"attributes\": {\n        \"limit\": {\"type\": \"Long\"},\n        \"department\": {\"type\": \"String\", \"required\": false}}}},\n      \"PurchaseOrder\": {\"shape\": {\"type\": \"Record\", \"attributes\": {\n        \"amount\": {\"type\": \"Long\"},\n        \"requester\": {\"type\": \"Entity\", \"name\": \"User\"}}}}},\n    \"actions\": {\"approve\": {\"appliesTo\": {\n      \"principalTypes\": [\"User\"], \"resourceTypes\": [\"PurchaseOrder\"]}}}}}",
+              "validFrom" : "1750000000"
+            },
+            "kind" : "cedarPolicySet"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "+grOfD99s6U7JCtqGXowrKi39ltgHBtK8Oe/12EmfSh8D90hUsPixlrorCgMyodaRUMyqYnCGhetumSTrhB9DA==",
+            "keyId" : "test-policy-store-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000030"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000903"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "79675f129a7d46e980f909a6ba63f70aa8e5f5f7a8737d848e76519c7d036811"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-30",
+              "system" : "policy-store"
+            },
+            "subject" : {
+              "key" : "observation-30",
+              "kind" : "record",
+              "system" : "policy-store"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      },
+      {
+        "body" : {
+          "complete" : {
+            "asOf" : "1767225600",
+            "kind" : "cedarPolicySet"
+          }
+        },
+        "statement" : {
+          "signature" : {
+            "encoded" : "SlgngQ4hLKjBniuYL+eAbPFLM358V8sIgi6T+Md78gZci/dX7qNX7SKwebJR3CLbWavjWzgdE89GELcsS6qtCg==",
+            "keyId" : "test-policy-store-1",
+            "scheme" : "Ed25519"
+          },
+          "statement" : {
+            "chain" : null,
+            "id" : {
+              "value" : "00000000-0000-4000-8000-000000000031"
+            },
+            "issuer" : {
+              "value" : "00000000-0000-4000-8000-000000000903"
+            },
+            "kind" : {
+              "ExternalAssertion" : {
+                
+              }
+            },
+            "observedAt" : {
+              "value" : "2026-01-01T00:00:00Z"
+            },
+            "payload" : {
+              "algorithm" : "sha-256",
+              "hex" : "a7cfc7722b22b976009cdafe55fe11dd7324e8728d5a6e9a64603fa5121ed5cb"
+            },
+            "protocol" : "verified-evidence-statement-v1",
+            "source" : {
+              "observationId" : "observation-31",
+              "system" : "policy-store"
+            },
+            "subject" : {
+              "key" : "observation-31",
+              "kind" : "record",
+              "system" : "policy-store"
+            },
+            "tenant" : {
+              "value" : "tenant-a"
+            }
+          }
+        }
+      }
+    ],
+    "tenant" : "tenant-a"
+  }
+}

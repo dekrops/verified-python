@@ -22,6 +22,18 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `Reference.work_record` name the members. The statement is laid out by
   upstream's producer, which refuses a relation a reader would refuse.
 
+- `verified.replay_derivation`: computes a presented *recomputed
+  authorization* again from its evidence, under your trust registry, and
+  compares (a draft, proposed in RFC 0005 and not part of the protocol). A
+  replay package carries a contract, signed statements and the result a first
+  verifier arrived at; nothing presented is believed. A `DerivationReplay`
+  has no truth value: it reports whether the result was reproduced, each
+  authorization's outcome with Cedar's own answer kept apart from it, the
+  contract's decision, and which requirements depend on which derivations.
+  The rules are upstream's `verified-derivation` crate, which links the Cedar
+  policy engine: the wheel grows, and the engine's time and memory are not
+  bounded.
+
 ### Fixed
 
 - Wheels now carry `THIRD-PARTY-LICENSES.md`: the licenses and notices of the
@@ -37,7 +49,7 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- The native extension is built on `dekrops/verified-cli` `v0.1.4`, and the
+- The native extension is built on `dekrops/verified-cli` `v0.1.5`, and the
   conformance corpus is `dekrops/wvp` at `46ccd1d`. From `v0.1.1`, the
   report `verify` returns is now produced by the upstream library
   (`Report::to_value`) instead of a copy of that mapping in this repository;
